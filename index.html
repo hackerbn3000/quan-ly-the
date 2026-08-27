@@ -3,209 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản Lý Thẻ Tín Dụng</title>
+  <title>Quản Lý Thẻ Tín Dụng Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Cấu hình PWA (Giúp cài đặt web thành App trên điện thoại) -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Quản Lý Thẻ">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlF14bqStoredIExZw7AgVGjhurogVMOtbiBE4bulbmciLAogICJzaG9ydF9uYW1lIjogIlF14bqStoredIExZw7AgVGjhurIiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwZjE3MmEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGYxNzJhIgp9">
 </head>
 
-<body class="bg-slate-100 min-h-screen p-4 md:p-8">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-8 pb-20">
   <div class="max-w-4xl mx-auto">
-    <header class="flex justify-between items-center mb-8">
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-4 border-b border-slate-800">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800">Thống Kê Thẻ Tín Dụng</h1>
-        <p class="text-sm text-slate-500">Quản lý mốc chi tiêu & đếm ngược ngày chốt sao kê</p>
+        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+          💳 Thống Kê Thẻ Tín Dụng Pro
+        </h1>
+        <p class="text-xs text-slate-400 mt-1">Theo dõi chi tiêu, đếm ngược sao kê & lịch sử tích thưởng</p>
       </div>
-      <button onclick="toggleModal('modal-add')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg text-sm shadow transition-colors">
-        + Thêm Thẻ Mới
-      </button>
+      <div class="flex gap-2 w-full sm:w-auto">
+        <button onclick="openMonthlyHistory()" class="flex-1 sm:flex-none bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs shadow border border-slate-700">
+          📜 Lịch Sử Tháng
+        </button>
+        <button onclick="toggleModal('modal-add')" class="flex-1 sm:flex-none bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow">
+          + Thêm Thẻ Mới
+        </button>
+      </div>
     </header>
 
     <!-- Danh sách thẻ -->
     <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <p class="text-slate-500 text-center col-span-2 py-8">Đang tải dữ liệu thẻ...</p>
+      <p class="text-slate-400 text-center col-span-2 py-8">Đang tải dữ liệu thẻ từ Firebase...</p>
     </div>
   </div>
 
   <!-- Modal Thêm/Sửa Thẻ -->
-  <div id="modal-add" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
-      <h2 id="modal-title" class="text-lg font-bold text-slate-800 mb-4">Thêm Thẻ Tín Dụng</h2>
+  <div id="modal-add" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl border border-slate-700 text-slate-100">
+      <h2 id="modal-title" class="text-lg font-bold mb-4">Thêm Thẻ Tín Dụng</h2>
       <form id="card-form" class="space-y-4">
         <input type="hidden" id="card-id">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Tên Thẻ / Ngân Hàng (VD: TPBank, VPBank, VIB)</label>
-          <input type="text" id="card-name" placeholder="VD: VIB Super Card" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Tên Thẻ / Ngân Hàng (VD: TPBank, VPBank, VIB)</label>
+          <input type="text" id="card-name" placeholder="VD: VIB Super Card" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Mốc Chi Tiêu (VNĐ)</label>
-            <input type="number" id="card-target" placeholder="10000000" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mốc Chi Tiêu (VNĐ)</label>
+            <input type="number" id="card-target" placeholder="10000000" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Ngày Sao Kê (Gõ 31 nếu cuối tháng)</label>
-            <input type="number" id="card-statement" min="1" max="31" placeholder="20" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Ngày Sao Kê (Gõ 31 nếu cuối tháng)</label>
+            <input type="number" id="card-statement" min="1" max="31" placeholder="20" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Ghi Chú Hoàn Thưởng</label>
-          <input type="text" id="card-reward" placeholder="VD: Hoàn Max Cap 500k điểm, trả hàng tuần" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Ghi Chú Hoàn Thưởng</label>
+          <input type="text" id="card-reward" placeholder="VD: Hoàn Max Cap 500k điểm, trả hàng tuần" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="toggleModal('modal-add')" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">Hủy</button>
-          <button type="submit" class="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Lưu Thẻ</button>
+          <button type="button" onclick="toggleModal('modal-add')" class="px-4 py-2 text-sm text-slate-400 hover:bg-slate-700 rounded-lg">Hủy</button>
+          <button type="submit" class="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-500">Lưu Thẻ</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal Xem Lịch Sử Giao Dịch Chi Tiết -->
+  <div id="modal-history" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div class="bg-slate-800 rounded-xl p-6 max-w-lg w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[80vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+        <h2 id="history-modal-title" class="text-lg font-bold">Lịch Sử Giao Dịch</h2>
+        <button onclick="toggleModal('modal-history')" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+      <div id="history-list" class="space-y-2 overflow-y-auto pr-1 flex-1">
+        <!-- Đổ danh sách giao dịch ở đây -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Xem Lịch Sử Các Tháng Đã Chốt -->
+  <div id="modal-monthly" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div class="bg-slate-800 rounded-xl p-6 max-w-lg w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[80vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+        <h2 class="text-lg font-bold">📜 Lịch Sử Chốt Sổ Các Tháng</h2>
+        <button onclick="toggleModal('modal-monthly')" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+      <div id="monthly-history-list" class="space-y-3 overflow-y-auto pr-1 flex-1">
+        <!-- Đổ lịch sử tháng ở đây -->
+      </div>
     </div>
   </div>
 
   <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // THAY CẤU HÌNH FIREBASE CỦA BẠN VÀO ĐÂY
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyCmtLvK0_CZ7EA_zbUjs01lqxN6ifO87Ok",
+      authDomain: "quan-ly-the-tin-dung.firebaseapp.com",
+      projectId: "quan-ly-the-tin-dung",
+      storageBucket: "quan-ly-the-tin-dung.firebasestorage.app",
+      messagingSenderId: "217488003582",
+      appId: "1:217488003582:web:b340037f8845fe0e2070af"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const cardsCollection = collection(db, "cards");
 
-    // Hàm xác định màu thẻ dựa trên tên ngân hàng
-    function getBankTheme(cardName = '') {
-      const name = cardName.toUpperCase();
-      if (name.includes('TP') || name.includes('TPBANK')) {
-        return {
-          cardBg: 'bg-purple-900',
-          headerText: 'text-purple-100',
-          subText: 'text-purple-200',
-          badgeBg: 'bg-purple-800/60 text-purple-200 border-purple-700',
-          progressBg: 'bg-purple-950/50',
-          progressBar: 'bg-amber-400',
-          spendText: 'text-purple-200',
-          rewardBg: 'bg-purple-950/40 text-purple-200 border-purple-700/50',
-          btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900',
-          inputBg: 'bg-purple-950/60 text-white placeholder-purple-300 border-purple-700 focus:ring-amber-400',
-          accentText: 'text-amber-300'
-        };
-      }
-      if (name.includes('VP') || name.includes('VPBANK')) {
-        return {
-          cardBg: 'bg-emerald-900',
-          headerText: 'text-emerald-100',
-          subText: 'text-emerald-200',
-          badgeBg: 'bg-emerald-800/60 text-emerald-200 border-emerald-700',
-          progressBg: 'bg-emerald-950/50',
-          progressBar: 'bg-emerald-400',
-          spendText: 'text-emerald-200',
-          rewardBg: 'bg-emerald-950/40 text-emerald-200 border-emerald-700/50',
-          btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white',
-          inputBg: 'bg-emerald-950/60 text-white placeholder-emerald-300 border-emerald-700 focus:ring-emerald-400',
-          accentText: 'text-emerald-300'
-        };
-      }
-      if (name.includes('VIB')) {
-        return {
-          cardBg: 'bg-blue-900',
-          headerText: 'text-blue-100',
-          subText: 'text-blue-200',
-          badgeBg: 'bg-blue-800/60 text-blue-200 border-blue-700',
-          progressBg: 'bg-blue-950/50',
-          progressBar: 'bg-orange-400',
-          spendText: 'text-blue-200',
-          rewardBg: 'bg-blue-950/40 text-blue-200 border-blue-700/50',
-          btnBg: 'bg-orange-500 hover:bg-orange-600 text-white',
-          inputBg: 'bg-blue-950/60 text-white placeholder-blue-300 border-blue-700 focus:ring-orange-400',
-          accentText: 'text-orange-300'
-        };
-      }
-      // Màu mặc định nếu là ngân hàng khác
-      return {
-        cardBg: 'bg-slate-800',
-        headerText: 'text-slate-100',
-        subText: 'text-slate-300',
-        badgeBg: 'bg-slate-700/60 text-slate-200 border-slate-600',
-        progressBg: 'bg-slate-900/50',
-        progressBar: 'bg-indigo-400',
-        spendText: 'text-slate-300',
-        rewardBg: 'bg-slate-900/40 text-slate-200 border-slate-700',
-        btnBg: 'bg-indigo-500 hover:bg-indigo-600 text-white',
-        inputBg: 'bg-slate-900/60 text-white placeholder-slate-400 border-slate-700 focus:ring-indigo-400',
-        accentText: 'text-indigo-300'
-      };
-    }
-
-    // Hàm tính đếm ngược ngày sao kê
-    function getDaysUntilStatement(statementDayInput) {
-      const today = new Date();
-      const currentYear = today.getFullYear();
-      const currentMonth = today.getMonth(); // 0-indexed
-      const todayDate = today.getDate();
-
-      // Xác định ngày cuối tháng của tháng hiện tại
-      const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-      let actualStatementDay = Math.min(statementDayInput, lastDayOfCurrentMonth);
-
-      let targetDate = new Date(currentYear, currentMonth, actualStatementDay);
-
-      // Nếu ngày sao kê tháng này đã qua, tính ngày sao kê của tháng sau
-      if (todayDate > actualStatementDay) {
-        const lastDayOfNextMonth = new Date(currentYear, currentMonth + 2, 0).getDate();
-        const nextStatementDay = Math.min(statementDayInput, lastDayOfNextMonth);
-        targetDate = new Date(currentYear, currentMonth + 1, nextStatementDay);
-      }
-
-      // Tính số ngày chênh lệch
-      const diffTime = targetDate.getTime() - new Date(currentYear, currentMonth, todayDate).getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      return {
-        daysLeft: diffDays,
-        isToday: diffDays === 0
-      };
-    }
-
-    // Tải danh sách thẻ realtime
+    // Lắng nghe dữ liệu Realtime
     onSnapshot(cardsCollection, (snapshot) => {
       const container = document.getElementById("cards-container");
       if (snapshot.empty) {
-        container.innerHTML = `<div class="col-span-2 text-center py-12 bg-white rounded-xl shadow-sm border text-slate-500">Chưa có thẻ nào. Nhấn "+ Thêm Thẻ Mới" để tạo thẻ đầu tiên!</div>`;
+        container.innerHTML = `<div class="col-span-2 text-center py-12 bg-slate-800/50 rounded-xl border border-slate-700 text-slate-400">Chưa có thẻ nào. Nhấn "+ Thêm Thẻ Mới" để tạo thẻ đầu tiên!</div>`;
         return;
       }
       container.innerHTML = "";
       snapshot.docs.forEach(docSnap => {
         const data = docSnap.data();
         const id = docSnap.id;
-        const current = data.currentSpending || 0;
-        const target = data.target || 1;
-        const percent = Math.min(Math.round((current / target) * 100), 100);
+        const current = Number(data.currentSpending) || 0;
+        const target = Number(data.target) || 1;
+
+        // Tính % chính xác 2 chữ số thập phân
+        const rawPercent = (current / target) * 100;
+        const displayPercent = rawPercent < 0.01 && rawPercent > 0 ? 0.01 : Number(rawPercent.toFixed(2));
+        const barWidth = Math.min(rawPercent, 100);
 
         const theme = getBankTheme(data.name);
         const statementInfo = getDaysUntilStatement(data.statementDay);
 
-        // Tạo badge đếm ngược ngày sao kê
-        let countdownBadge = '';
-        if (statementInfo.isToday) {
-          countdownBadge = `<span class="bg-rose-500 text-white font-semibold text-xs px-2.5 py-1 rounded-full animate-pulse shadow">Hôm nay chốt sao kê!</span>`;
-        } else if (statementInfo.daysLeft <= 3) {
-          countdownBadge = `<span class="bg-amber-500 text-slate-900 font-semibold text-xs px-2.5 py-1 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày (Gấp)</span>`;
-        } else {
-          countdownBadge = `<span class="${theme.badgeBg} text-xs px-2.5 py-1 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
-        }
+        // Feature 5: Tính ước tính thưởng
+        const rewardEstimate = calculateRewardEstimate(data.name, current, target);
+
+        let countdownBadge = statementInfo.isToday 
+          ? `<span class="bg-rose-500 text-white font-semibold text-xs px-2.5 py-1 rounded-full animate-pulse shadow">Hôm nay chốt sao kê!</span>`
+          : statementInfo.daysLeft <= 3
+          ? `<span class="bg-amber-500 text-slate-900 font-semibold text-xs px-2.5 py-1 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày (Gấp)</span>`
+          : `<span class="${theme.badgeBg} text-xs px-2.5 py-1 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
 
         container.innerHTML += `
-          <div class="${theme.cardBg} rounded-xl shadow-lg border border-white/10 p-5 flex flex-col justify-between transition-all duration-300">
+          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-5 flex flex-col justify-between transition-all duration-300">
             <div>
               <div class="flex justify-between items-start mb-3">
                 <div>
                   <h3 class="font-bold text-lg ${theme.headerText}">${data.name}</h3>
                   <div class="flex items-center gap-2 mt-1">
-                    <span class="text-xs ${theme.subText}">Sao kê ngày ${data.statementDay === 31 ? 'cuối tháng' : data.statementDay}</span>
+                    <span class="text-xs ${theme.subText}">Sao kê: Ngày ${data.statementDay === 31 ? 'cuối tháng' : data.statementDay}</span>
                     ${countdownBadge}
                   </div>
                 </div>
@@ -215,33 +164,273 @@
                 </div>
               </div>
 
-              <!-- Tiến trình chi tiêu -->
+              <!-- Tiến trình chi tiêu (Sửa % chuẩn) -->
               <div class="mt-4">
                 <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span class="${theme.spendText}">Đã quẹt: ${Number(current).toLocaleString('vi-VN')} đ</span>
-                  <span class="${percent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${percent}%</span>
+                  <span class="${theme.spendText}">Đã quẹt: ${current.toLocaleString('vi-VN')} đ</span>
+                  <span class="${displayPercent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${displayPercent}%</span>
                 </div>
                 <div class="w-full ${theme.progressBg} rounded-full h-3 p-0.5 border border-white/10">
-                  <div class="${percent >= 100 ? 'bg-emerald-400' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                  <div class="${displayPercent >= 100 ? 'bg-emerald-400' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
                 </div>
-                <p class="text-xs ${theme.subText} mt-1 text-right">Mốc: ${Number(target).toLocaleString('vi-VN')} đ</p>
+                <p class="text-xs ${theme.subText} mt-1 text-right">Mốc: ${target.toLocaleString('vi-VN')} đ</p>
               </div>
 
-              ${data.rewardNote ? `<div class="mt-3 p-2.5 ${theme.rewardBg} rounded-lg text-xs border backdrop-blur-sm">💡 ${data.rewardNote}</div>` : ''}
+              <!-- Ước tính phần thưởng (Feature 5) & Ghi chú -->
+              <div class="mt-3 space-y-2">
+                <div class="p-2.5 ${theme.rewardBg} rounded-lg text-xs border backdrop-blur-sm flex justify-between items-center">
+                  <span>🎯 Tiến độ hoàn thưởng:</span>
+                  <span class="font-bold ${theme.accentText}">${rewardEstimate}</span>
+                </div>
+                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs text-white/80 italic">💡 ${data.rewardNote}</div>` : ''}
+              </div>
             </div>
 
-            <!-- Cập nhật chi tiêu -->
-            <div class="mt-5 pt-4 border-t border-white/10 flex gap-2">
-              <input type="number" id="spend-input-${id}" placeholder="+ Thêm tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-full outline-none border focus:ring-1">
-              <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-3 py-2 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
-              <button onclick="resetSpending('${id}')" class="text-xs text-white/50 hover:text-white shrink-0 px-1">Reset</button>
+            <!-- Nhập chi tiêu mới (Feature 1) -->
+            <div class="mt-5 pt-4 border-t border-white/10 space-y-2">
+              <div class="flex gap-2">
+                <input type="number" id="spend-input-${id}" placeholder="+ Số tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-2/3 outline-none border focus:ring-1">
+                <input type="text" id="spend-note-${id}" placeholder="Ghi chú (VD: Mua Siêu thị)" class="${theme.inputBg} rounded-lg p-2 text-xs w-1/3 outline-none border focus:ring-1">
+              </div>
+              <div class="flex justify-between items-center gap-2 pt-1">
+                <div class="flex gap-1">
+                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
+                  <button onclick="closeMonth('${id}', '${data.name}', ${current}, ${target})" class="text-xs text-amber-300 hover:text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1.5 rounded-lg border border-amber-500/30">🔒 Chốt tháng</button>
+                </div>
+                <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-4 py-1.5 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
+              </div>
             </div>
           </div>
         `;
       });
     });
 
-    // Thêm/Sửa Thẻ
+    // Feature 5: Hàm ước tính phần thưởng dựa theo mốc thực tế
+    function calculateRewardEstimate(cardName, current, target) {
+      const name = cardName.toUpperCase();
+      const percent = (current / target) * 100;
+
+      if (name.includes('SUPER CARD')) {
+        const points = Math.min(Math.floor((current / target) * 500000), 500000);
+        return `${points.toLocaleString('vi-VN')} / 500.000 điểm`;
+      }
+      if (percent >= 100) {
+        return "🎉 Đã ĐẠT MỐC Hoàn Thưởng!";
+      }
+      return `Đạt ${percent.toFixed(1)}% mốc thưởng`;
+    }
+
+    // Feature 1: Cập nhật chi tiêu kèm lịch sử giao dịch
+    window.addSpending = async (id, currentVal) => {
+      const input = document.getElementById(`spend-input-${id}`);
+      const noteInput = document.getElementById(`spend-note-${id}`);
+      const val = Number(input.value);
+      const note = noteInput.value.trim() || "Chuyển khoản / Quẹt thẻ";
+
+      if (val) {
+        const cardRef = doc(db, "cards", id);
+        const cardSnap = await getDoc(cardRef);
+        const history = cardSnap.data().history || [];
+
+        const newLog = {
+          amount: val,
+          note: note,
+          timestamp: new Date().toLocaleString('vi-VN')
+        };
+
+        await updateDoc(cardRef, {
+          currentSpending: currentVal + val,
+          history: [newLog, ...history]
+        });
+
+        input.value = "";
+        noteInput.value = "";
+      }
+    };
+
+    // Feature 1: Xem lịch sử từng giao dịch nhỏ
+    window.viewHistory = async (id, cardName) => {
+      document.getElementById("history-modal-title").innerText = `Lịch Sử Giao Dịch: ${cardName}`;
+      const cardSnap = await getDoc(doc(db, "cards", id));
+      const history = cardSnap.data().history || [];
+      const container = document.getElementById("history-list");
+
+      if (history.length === 0) {
+        container.innerHTML = `<p class="text-center text-slate-400 py-6 text-xs">Chưa có giao dịch nào được ghi nhận.</p>`;
+      } else {
+        container.innerHTML = history.map((item, idx) => `
+          <div class="bg-slate-900 border border-slate-700/60 rounded-lg p-3 flex justify-between items-center text-xs">
+            <div>
+              <p class="font-bold text-emerald-400">+${item.amount.toLocaleString('vi-VN')} đ</p>
+              <p class="text-slate-300 mt-0.5">${item.note}</p>
+              <p class="text-slate-500 text-[10px]">${item.timestamp}</p>
+            </div>
+            <button onclick="deleteHistoryItem('${id}', ${idx})" class="text-rose-400 hover:text-rose-300 text-xs px-2 py-1 bg-rose-500/10 rounded">Xóa</button>
+          </div>
+        `).join('');
+      }
+      toggleModal('modal-history');
+    };
+
+    // Feature 1: Xóa 1 dòng lịch sử
+    window.deleteHistoryItem = async (cardId, index) => {
+      if (confirm("Xóa giao dịch này và trừ tiền tương ứng?")) {
+        const cardRef = doc(db, "cards", cardId);
+        const cardSnap = await getDoc(cardRef);
+        const data = cardSnap.data();
+        const history = data.history || [];
+        const deletedItem = history[index];
+
+        history.splice(index, 1);
+        const newSpending = Math.max(0, (data.currentSpending || 0) - deletedItem.amount);
+
+        await updateDoc(cardRef, {
+          currentSpending: newSpending,
+          history: history
+        });
+        viewHistory(cardId, data.name);
+      }
+    };
+
+    // Feature 3: Chốt sổ tháng & reset về 0đ
+    window.closeMonth = async (id, name, current, target) => {
+      const monthName = prompt("Nhập tên tháng chốt sổ (VD: Tháng 08/2026):", `Tháng ${new Date().getMonth() + 1}/${new Date().getFullYear()}`);
+      if (!monthName) return;
+
+      const monthlyRef = collection(db, "monthly_archive");
+      await addDoc(monthlyRef, {
+        cardName: name,
+        month: monthName,
+        totalSpent: current,
+        target: target,
+        closedAt: new Date().toLocaleString('vi-VN')
+      });
+
+      // Reset thẻ về 0
+      await updateDoc(doc(db, "cards", id), {
+        currentSpending: 0,
+        history: []
+      });
+
+      alert(`Đã chốt sổ ${monthName} cho thẻ ${name} thành công!`);
+    };
+
+    // Feature 3: Xem lịch sử chốt sổ các tháng
+    window.openMonthlyHistory = () => {
+      onSnapshot(collection(db, "monthly_archive"), (snapshot) => {
+        const container = document.getElementById("monthly-history-list");
+        if (snapshot.empty) {
+          container.innerHTML = `<p class="text-center text-slate-400 py-6 text-xs">Chưa có dữ liệu chốt sổ tháng nào.</p>`;
+        } else {
+          container.innerHTML = snapshot.docs.map(docSnap => {
+            const d = docSnap.data();
+            const isReached = d.totalSpent >= d.target;
+            return `
+              <div class="bg-slate-900 border border-slate-700 p-3 rounded-lg text-xs space-y-1">
+                <div class="flex justify-between font-bold">
+                  <span class="text-indigo-400">${d.cardName} (${d.month})</span>
+                  <span class="${isReached ? 'text-emerald-400' : 'text-amber-400'}">${isReached ? '🎉 Đạt Mốc' : 'Chưa Đạt'}</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                  <span>Tổng chi: ${d.totalSpent.toLocaleString('vi-VN')} đ</span>
+                  <span>Mốc: ${d.target.toLocaleString('vi-VN')} đ</span>
+                </div>
+                <p class="text-[10px] text-slate-500">Chốt lúc: ${d.closedAt}</p>
+              </div>
+            `;
+          }).join('');
+        }
+        toggleModal('modal-monthly');
+      });
+    };
+
+    // Utility & Theme Functions
+    function getBankTheme(cardName = '') {
+      const name = cardName.toUpperCase();
+      if (name.includes('TP')) {
+        return {
+          cardBg: 'bg-purple-950/80',
+          headerText: 'text-purple-100',
+          subText: 'text-purple-300',
+          badgeBg: 'bg-purple-900/60 text-purple-200 border-purple-700',
+          progressBg: 'bg-purple-950',
+          progressBar: 'bg-amber-400',
+          spendText: 'text-purple-200',
+          rewardBg: 'bg-purple-900/40 text-purple-200 border-purple-700/50',
+          btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900',
+          inputBg: 'bg-purple-900/60 text-white placeholder-purple-400 border-purple-700 focus:ring-amber-400',
+          accentText: 'text-amber-300'
+        };
+      }
+      if (name.includes('VP')) {
+        return {
+          cardBg: 'bg-emerald-950/80',
+          headerText: 'text-emerald-100',
+          subText: 'text-emerald-300',
+          badgeBg: 'bg-emerald-900/60 text-emerald-200 border-emerald-700',
+          progressBg: 'bg-emerald-950',
+          progressBar: 'bg-emerald-400',
+          spendText: 'text-emerald-200',
+          rewardBg: 'bg-emerald-900/40 text-emerald-200 border-emerald-700/50',
+          btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+          inputBg: 'bg-emerald-900/60 text-white placeholder-emerald-400 border-emerald-700 focus:ring-emerald-400',
+          accentText: 'text-emerald-300'
+        };
+      }
+      if (name.includes('VIB')) {
+        return {
+          cardBg: 'bg-blue-950/80',
+          headerText: 'text-blue-100',
+          subText: 'text-blue-300',
+          badgeBg: 'bg-blue-900/60 text-blue-200 border-blue-700',
+          progressBg: 'bg-blue-950',
+          progressBar: 'bg-orange-400',
+          spendText: 'text-blue-200',
+          rewardBg: 'bg-blue-900/40 text-blue-200 border-blue-700/50',
+          btnBg: 'bg-orange-500 hover:bg-orange-600 text-white',
+          inputBg: 'bg-blue-900/60 text-white placeholder-blue-400 border-blue-700 focus:ring-orange-400',
+          accentText: 'text-orange-300'
+        };
+      }
+      return {
+        cardBg: 'bg-slate-800',
+        headerText: 'text-slate-100',
+        subText: 'text-slate-300',
+        badgeBg: 'bg-slate-700/60 text-slate-200 border-slate-600',
+        progressBg: 'bg-slate-900',
+        progressBar: 'bg-indigo-400',
+        spendText: 'text-slate-300',
+        rewardBg: 'bg-slate-900/40 text-slate-200 border-slate-700',
+        btnBg: 'bg-indigo-500 hover:bg-indigo-600 text-white',
+        inputBg: 'bg-slate-900/60 text-white placeholder-slate-400 border-slate-700 focus:ring-indigo-400',
+        accentText: 'text-indigo-300'
+      };
+    }
+
+    function getDaysUntilStatement(statementDayInput) {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth();
+      const todayDate = today.getDate();
+
+      const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      let actualStatementDay = Math.min(statementDayInput, lastDayOfCurrentMonth);
+
+      let targetDate = new Date(currentYear, currentMonth, actualStatementDay);
+
+      if (todayDate > actualStatementDay) {
+        const lastDayOfNextMonth = new Date(currentYear, currentMonth + 2, 0).getDate();
+        const nextStatementDay = Math.min(statementDayInput, lastDayOfNextMonth);
+        targetDate = new Date(currentYear, currentMonth + 1, nextStatementDay);
+      }
+
+      const diffTime = targetDate.getTime() - new Date(currentYear, currentMonth, todayDate).getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      return { daysLeft: diffDays, isToday: diffDays === 0 };
+    }
+
+    // Modal & Crud
     document.getElementById("card-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const id = document.getElementById("card-id").value;
@@ -253,27 +442,10 @@
       if (id) {
         await updateDoc(doc(db, "cards", id), { name, target, statementDay, rewardNote });
       } else {
-        await addDoc(cardsCollection, { name, target, statementDay, rewardNote, currentSpending: 0 });
+        await addDoc(cardsCollection, { name, target, statementDay, rewardNote, currentSpending: 0, history: [] });
       }
       toggleModal('modal-add');
-      document.getElementById("card-form").reset();
     });
-
-    // Các hàm thao tác dữ liệu
-    window.addSpending = async (id, currentVal) => {
-      const input = document.getElementById(`spend-input-${id}`);
-      const val = Number(input.value);
-      if (val) {
-        await updateDoc(doc(db, "cards", id), { currentSpending: currentVal + val });
-        input.value = "";
-      }
-    };
-
-    window.resetSpending = async (id) => {
-      if (confirm("Reset chi tiêu thẻ này về 0 đ?")) {
-        await updateDoc(doc(db, "cards", id), { currentSpending: 0 });
-      }
-    };
 
     window.deleteCard = async (id) => {
       if (confirm("Bạn có chắc chắn muốn xóa thẻ này?")) {
@@ -294,11 +466,6 @@
     window.toggleModal = (modalId) => {
       const el = document.getElementById(modalId);
       el.classList.toggle("hidden");
-      if (el.classList.contains("hidden")) {
-        document.getElementById("card-form").reset();
-        document.getElementById("card-id").value = "";
-        document.getElementById("modal-title").innerText = "Thêm Thẻ Tín Dụng";
-      }
     };
   </script>
 </body>
