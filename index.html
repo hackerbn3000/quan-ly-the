@@ -12,9 +12,9 @@
     <header class="flex justify-between items-center mb-8">
       <div>
         <h1 class="text-2xl font-bold text-slate-800">Thống Kê Thẻ Tín Dụng</h1>
-        <p class="text-sm text-slate-500">Quản lý mốc chi tiêu & chốt sao kê cá nhân</p>
+        <p class="text-sm text-slate-500">Quản lý mốc chi tiêu & đếm ngược ngày chốt sao kê</p>
       </div>
-      <button onclick="toggleModal('modal-add')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg text-sm shadow">
+      <button onclick="toggleModal('modal-add')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg text-sm shadow transition-colors">
         + Thêm Thẻ Mới
       </button>
     </header>
@@ -26,13 +26,13 @@
   </div>
 
   <!-- Modal Thêm/Sửa Thẻ -->
-  <div id="modal-add" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4">
+  <div id="modal-add" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-xl p-6 max-w-md w-full shadow-xl">
       <h2 id="modal-title" class="text-lg font-bold text-slate-800 mb-4">Thêm Thẻ Tín Dụng</h2>
       <form id="card-form" class="space-y-4">
         <input type="hidden" id="card-id">
         <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Tên Thẻ / Ngân Hàng</label>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Tên Thẻ / Ngân Hàng (VD: TPBank, VPBank, VIB)</label>
           <input type="text" id="card-name" placeholder="VD: VIB Super Card" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
         <div class="grid grid-cols-2 gap-4">
@@ -41,7 +41,7 @@
             <input type="number" id="card-target" placeholder="10000000" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Ngày Sao Kê</label>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Ngày Sao Kê (Gõ 31 nếu cuối tháng)</label>
             <input type="number" id="card-statement" min="1" max="31" placeholder="20" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
         </div>
@@ -64,17 +64,111 @@
 
     // THAY CẤU HÌNH FIREBASE CỦA BẠN VÀO ĐÂY
     const firebaseConfig = {
-      apiKey: "AIzaSyCmtLvK0_CZ7EA_zbUjs01lqxN6ifO87Ok",
-      authDomain: "quan-ly-the-tin-dung.firebaseapp.com",
-      projectId: "quan-ly-the-tin-dung",
-      storageBucket: "quan-ly-the-tin-dung.firebasestorage.app",
-      messagingSenderId: "217488003582",
-      appId: "1:217488003582:web:b340037f8845fe0e2070af"
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const cardsCollection = collection(db, "cards");
+
+    // Hàm xác định màu thẻ dựa trên tên ngân hàng
+    function getBankTheme(cardName = '') {
+      const name = cardName.toUpperCase();
+      if (name.includes('TP') || name.includes('TPBANK')) {
+        return {
+          cardBg: 'bg-purple-900',
+          headerText: 'text-purple-100',
+          subText: 'text-purple-200',
+          badgeBg: 'bg-purple-800/60 text-purple-200 border-purple-700',
+          progressBg: 'bg-purple-950/50',
+          progressBar: 'bg-amber-400',
+          spendText: 'text-purple-200',
+          rewardBg: 'bg-purple-950/40 text-purple-200 border-purple-700/50',
+          btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900',
+          inputBg: 'bg-purple-950/60 text-white placeholder-purple-300 border-purple-700 focus:ring-amber-400',
+          accentText: 'text-amber-300'
+        };
+      }
+      if (name.includes('VP') || name.includes('VPBANK')) {
+        return {
+          cardBg: 'bg-emerald-900',
+          headerText: 'text-emerald-100',
+          subText: 'text-emerald-200',
+          badgeBg: 'bg-emerald-800/60 text-emerald-200 border-emerald-700',
+          progressBg: 'bg-emerald-950/50',
+          progressBar: 'bg-emerald-400',
+          spendText: 'text-emerald-200',
+          rewardBg: 'bg-emerald-950/40 text-emerald-200 border-emerald-700/50',
+          btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+          inputBg: 'bg-emerald-950/60 text-white placeholder-emerald-300 border-emerald-700 focus:ring-emerald-400',
+          accentText: 'text-emerald-300'
+        };
+      }
+      if (name.includes('VIB')) {
+        return {
+          cardBg: 'bg-blue-900',
+          headerText: 'text-blue-100',
+          subText: 'text-blue-200',
+          badgeBg: 'bg-blue-800/60 text-blue-200 border-blue-700',
+          progressBg: 'bg-blue-950/50',
+          progressBar: 'bg-orange-400',
+          spendText: 'text-blue-200',
+          rewardBg: 'bg-blue-950/40 text-blue-200 border-blue-700/50',
+          btnBg: 'bg-orange-500 hover:bg-orange-600 text-white',
+          inputBg: 'bg-blue-950/60 text-white placeholder-blue-300 border-blue-700 focus:ring-orange-400',
+          accentText: 'text-orange-300'
+        };
+      }
+      // Màu mặc định nếu là ngân hàng khác
+      return {
+        cardBg: 'bg-slate-800',
+        headerText: 'text-slate-100',
+        subText: 'text-slate-300',
+        badgeBg: 'bg-slate-700/60 text-slate-200 border-slate-600',
+        progressBg: 'bg-slate-900/50',
+        progressBar: 'bg-indigo-400',
+        spendText: 'text-slate-300',
+        rewardBg: 'bg-slate-900/40 text-slate-200 border-slate-700',
+        btnBg: 'bg-indigo-500 hover:bg-indigo-600 text-white',
+        inputBg: 'bg-slate-900/60 text-white placeholder-slate-400 border-slate-700 focus:ring-indigo-400',
+        accentText: 'text-indigo-300'
+      };
+    }
+
+    // Hàm tính đếm ngược ngày sao kê
+    function getDaysUntilStatement(statementDayInput) {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth(); // 0-indexed
+      const todayDate = today.getDate();
+
+      // Xác định ngày cuối tháng của tháng hiện tại
+      const lastDayOfCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      let actualStatementDay = Math.min(statementDayInput, lastDayOfCurrentMonth);
+
+      let targetDate = new Date(currentYear, currentMonth, actualStatementDay);
+
+      // Nếu ngày sao kê tháng này đã qua, tính ngày sao kê của tháng sau
+      if (todayDate > actualStatementDay) {
+        const lastDayOfNextMonth = new Date(currentYear, currentMonth + 2, 0).getDate();
+        const nextStatementDay = Math.min(statementDayInput, lastDayOfNextMonth);
+        targetDate = new Date(currentYear, currentMonth + 1, nextStatementDay);
+      }
+
+      // Tính số ngày chênh lệch
+      const diffTime = targetDate.getTime() - new Date(currentYear, currentMonth, todayDate).getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      return {
+        daysLeft: diffDays,
+        isToday: diffDays === 0
+      };
+    }
 
     // Tải danh sách thẻ realtime
     onSnapshot(cardsCollection, (snapshot) => {
@@ -91,40 +185,56 @@
         const target = data.target || 1;
         const percent = Math.min(Math.round((current / target) * 100), 100);
 
+        const theme = getBankTheme(data.name);
+        const statementInfo = getDaysUntilStatement(data.statementDay);
+
+        // Tạo badge đếm ngược ngày sao kê
+        let countdownBadge = '';
+        if (statementInfo.isToday) {
+          countdownBadge = `<span class="bg-rose-500 text-white font-semibold text-xs px-2.5 py-1 rounded-full animate-pulse shadow">Hôm nay chốt sao kê!</span>`;
+        } else if (statementInfo.daysLeft <= 3) {
+          countdownBadge = `<span class="bg-amber-500 text-slate-900 font-semibold text-xs px-2.5 py-1 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày (Gấp)</span>`;
+        } else {
+          countdownBadge = `<span class="${theme.badgeBg} text-xs px-2.5 py-1 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
+        }
+
         container.innerHTML += `
-          <div class="bg-white rounded-xl shadow-sm border p-5 flex flex-col justify-between">
+          <div class="${theme.cardBg} rounded-xl shadow-lg border border-white/10 p-5 flex flex-col justify-between transition-all duration-300">
             <div>
-              <div class="flex justify-between items-start mb-2">
+              <div class="flex justify-between items-start mb-3">
                 <div>
-                  <h3 class="font-bold text-lg text-slate-800">${data.name}</h3>
-                  <span class="inline-block bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded mt-1">Sao kê ngày: ${data.statementDay} hàng tháng</span>
+                  <h3 class="font-bold text-lg ${theme.headerText}">${data.name}</h3>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs ${theme.subText}">Sao kê ngày ${data.statementDay === 31 ? 'cuối tháng' : data.statementDay}</span>
+                    ${countdownBadge}
+                  </div>
                 </div>
-                <div class="space-x-1">
-                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}')" class="text-xs text-indigo-600 hover:bg-indigo-50 px-2 py-1 rounded">Sửa</button>
-                  <button onclick="deleteCard('${id}')" class="text-xs text-rose-600 hover:bg-rose-50 px-2 py-1 rounded">Xóa</button>
+                <div class="space-x-1 shrink-0">
+                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}')" class="text-xs text-white/70 hover:text-white px-2 py-1 rounded hover:bg-white/10">Sửa</button>
+                  <button onclick="deleteCard('${id}')" class="text-xs text-rose-300 hover:text-rose-100 px-2 py-1 rounded hover:bg-rose-500/20">Xóa</button>
                 </div>
               </div>
 
-              <!-- Tiến trình -->
+              <!-- Tiến trình chi tiêu -->
               <div class="mt-4">
                 <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span class="text-slate-500">Đã quẹt: ${Number(current).toLocaleString('vi-VN')} đ</span>
-                  <span class="${percent >= 100 ? 'text-emerald-600' : 'text-indigo-600'}">${percent}%</span>
+                  <span class="${theme.spendText}">Đã quẹt: ${Number(current).toLocaleString('vi-VN')} đ</span>
+                  <span class="${percent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${percent}%</span>
                 </div>
-                <div class="w-full bg-slate-100 rounded-full h-3">
-                  <div class="${percent >= 100 ? 'bg-emerald-500' : 'bg-indigo-600'} h-3 rounded-full transition-all" style="width: ${percent}%"></div>
+                <div class="w-full ${theme.progressBg} rounded-full h-3 p-0.5 border border-white/10">
+                  <div class="${percent >= 100 ? 'bg-emerald-400' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
                 </div>
-                <p class="text-xs text-slate-400 mt-1 text-right">Mốc: ${Number(target).toLocaleString('vi-VN')} đ</p>
+                <p class="text-xs ${theme.subText} mt-1 text-right">Mốc: ${Number(target).toLocaleString('vi-VN')} đ</p>
               </div>
 
-              ${data.rewardNote ? `<div class="mt-3 p-2 bg-amber-50 rounded text-xs text-amber-800 border border-amber-100">💡 ${data.rewardNote}</div>` : ''}
+              ${data.rewardNote ? `<div class="mt-3 p-2.5 ${theme.rewardBg} rounded-lg text-xs border backdrop-blur-sm">💡 ${data.rewardNote}</div>` : ''}
             </div>
 
             <!-- Cập nhật chi tiêu -->
-            <div class="mt-4 pt-4 border-t flex gap-2">
-              <input type="number" id="spend-input-${id}" placeholder="+ Thêm số tiền quẹt" class="border rounded-lg p-1.5 text-xs w-full outline-none focus:ring-1 focus:ring-indigo-500">
-              <button onclick="addSpending('${id}', ${current})" class="bg-slate-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg hover:bg-slate-700 shrink-0">Cập nhật</button>
-              <button onclick="resetSpending('${id}')" class="text-xs text-slate-400 hover:text-slate-600 shrink-0">Reset</button>
+            <div class="mt-5 pt-4 border-t border-white/10 flex gap-2">
+              <input type="number" id="spend-input-${id}" placeholder="+ Thêm tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-full outline-none border focus:ring-1">
+              <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-3 py-2 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
+              <button onclick="resetSpending('${id}')" class="text-xs text-white/50 hover:text-white shrink-0 px-1">Reset</button>
             </div>
           </div>
         `;
@@ -149,7 +259,7 @@
       document.getElementById("card-form").reset();
     });
 
-    // Hàm tương tác với Firebase
+    // Các hàm thao tác dữ liệu
     window.addSpending = async (id, currentVal) => {
       const input = document.getElementById(`spend-input-${id}`);
       const val = Number(input.value);
@@ -160,7 +270,7 @@
     };
 
     window.resetSpending = async (id) => {
-      if (confirm("Reset chi tiêu tháng này về 0?")) {
+      if (confirm("Reset chi tiêu thẻ này về 0 đ?")) {
         await updateDoc(doc(db, "cards", id), { currentSpending: 0 });
       }
     };
