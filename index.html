@@ -40,35 +40,35 @@
       </div>
     </header>
 
-    <!-- Bố cục: Danh Sách Thẻ (Bên Trái - 3 phần) | Quy Tắc & Ghi Chú (Bên Phải - 1 phần) -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Bố cục: Danh Sách Thẻ (Trái - 3/4) | Quy Tắc & Ghi Chú (Phải - 1/4) -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
       
-      <!-- Cột Trái: Danh sách Thẻ Tín Dụng (Luôn hiển thị 2 thẻ/hàng) -->
+      <!-- Cột Trái: Danh sách Thẻ Tín Dụng (2 thẻ / 1 hàng) -->
       <div class="lg:col-span-3">
         <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
           <p class="text-slate-400 text-center col-span-2 py-8">Đang tải dữ liệu thẻ từ Firebase...</p>
         </div>
       </div>
 
-      <!-- Cột Phải: Gom Quy Tắc & Ghi Chú vào cùng một bên -->
-      <div class="lg:col-span-1 space-y-5">
+      <!-- Cột Phải: Gom Quy Tắc & Ghi Chú (Chiều dài bằng 2 thẻ xếp dọc) -->
+      <div class="lg:col-span-1 flex flex-col gap-5 h-full">
         
         <!-- Mục Quy Tắc -->
-        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60">
-          <h2 class="text-sm font-bold text-indigo-400 mb-2 flex items-center justify-between">
+        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 flex-1 flex flex-col">
+          <h2 class="text-sm font-bold text-indigo-400 mb-2 flex items-center justify-between shrink-0">
             <span>📌 Quy Tắc Dùng Thẻ</span>
             <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 hover:bg-indigo-600/50">Lưu</button>
           </h2>
-          <textarea id="rules-textarea" rows="7" placeholder="- Thẻ VIB: Quẹt Ẩm thực/Khách sạn...&#10;- Thẻ VPBank: Tiêu mốc 3.3tr max xu...&#10;- Kiểm tra MCC trước khi thanh toán." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed"></textarea>
+          <textarea id="rules-textarea" placeholder="- Thẻ VIB: Quẹt Ẩm thực/Khách sạn...&#10;- Thẻ VPBank: Tiêu mốc 3.3tr max xu...&#10;- Kiểm tra MCC trước khi thanh toán." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed flex-1 min-h-[160px]"></textarea>
         </div>
 
         <!-- Mục Ghi Chú Nhanh -->
-        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60">
-          <h2 class="text-sm font-bold text-amber-400 mb-2 flex items-center justify-between">
+        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 flex-1 flex flex-col">
+          <h2 class="text-sm font-bold text-amber-400 mb-2 flex items-center justify-between shrink-0">
             <span>📝 Ghi Chú Nhanh</span>
             <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 hover:bg-amber-600/50">Lưu</button>
           </h2>
-          <textarea id="notes-textarea" rows="7" placeholder="- Cần thanh toán trả góp ngày 15...&#10;- Kiểm tra cashback TPBank...&#10;- Mã giảm giá mua sắm..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed"></textarea>
+          <textarea id="notes-textarea" placeholder="- Cần thanh toán trả góp ngày 15...&#10;- Kiểm tra cashback TPBank...&#10;- Mã giảm giá mua sắm..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed flex-1 min-h-[160px]"></textarea>
         </div>
 
       </div>
@@ -76,7 +76,7 @@
     </div>
   </div>
 
-  <!-- Modal Thêm/Sửa Thẻ (Có màu Đen VIP) -->
+  <!-- Modal Thêm/Sửa Thẻ -->
   <div id="modal-add" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
     <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl border border-slate-700 text-slate-100">
       <h2 id="modal-title" class="text-lg font-bold mb-4">Thêm Thẻ Tín Dụng</h2>
@@ -84,7 +84,7 @@
         <input type="hidden" id="card-id" value="">
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Tên Thẻ / Ngân Hàng</label>
-          <input type="text" id="card-name" placeholder="VD: VIB Super Card" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          <input type="text" id="card-name" placeholder="VD: VIB Super Card - 6700" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -99,12 +99,12 @@
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Tông Màu Thẻ</label>
           <select id="card-color" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-            <option value="black">🖤 Đen VIP (Black Platinum / Metal)</option>
-            <option value="blue">💙 Xanh Dương (VIB / Techcombank)</option>
+            <option value="white_amex">⚪ Trắng Silver AMEX (VIB Super Card)</option>
+            <option value="avocado">🥑 Xanh Bơ Avocado (VIB Max Card)</option>
+            <option value="black">🖤 Đen VIP (Black Titanium / Metal)</option>
+            <option value="blue">💙 Xanh Dương (VIB Standard)</option>
             <option value="purple">💜 Tím (TPBank / VPBank EVO)</option>
-            <option value="emerald">💚 Xanh Lá (VPBank / Sacombank)</option>
-            <option value="rose">❤️ Đỏ Rose (HSBC / MB)</option>
-            <option value="amber">💛 Vàng Hoàng Gia (VPBank Diamond)</option>
+            <option value="emerald">💚 Xanh Lá (VPBank S Reward)</option>
             <option value="slate">🩶 Xám Neutral (Mặc định)</option>
           </select>
         </div>
@@ -120,7 +120,7 @@
     </div>
   </div>
 
-  <!-- Modal Xem Thống Kê Hàng Tháng - Hàng Năm -->
+  <!-- Modal Thống Kê -->
   <div id="modal-stats" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
     <div class="bg-slate-800 rounded-xl p-6 max-w-xl w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
@@ -131,7 +131,7 @@
     </div>
   </div>
 
-  <!-- Modal Lịch Sử Giao Dịch Chi Tiết -->
+  <!-- Modal Lịch Sử Giao Dịch -->
   <div id="modal-history" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
     <div class="bg-slate-800 rounded-xl p-6 max-w-lg w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[80vh] flex flex-col">
       <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
@@ -238,7 +238,7 @@
                 <div>
                   <div class="flex items-center gap-2">
                     <h3 class="font-bold text-lg ${theme.headerText}">${data.name}</h3>
-                    <span class="text-[10px] bg-white/10 text-slate-300 px-2 py-0.5 rounded border border-white/10">Kỳ: ${currentCycle}</span>
+                    <span class="text-[10px] bg-black/20 text-slate-300 px-2 py-0.5 rounded border border-white/10">Kỳ: ${currentCycle}</span>
                   </div>
                   <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs ${theme.subText}">Sao kê: Ngày ${data.statementDay === 31 ? 'cuối tháng' : data.statementDay}</span>
@@ -246,7 +246,7 @@
                   </div>
                 </div>
                 <div class="space-x-1 shrink-0">
-                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}', '${data.customColor || ''}')" class="text-xs text-white/70 hover:text-white px-2 py-1 rounded hover:bg-white/10">Sửa</button>
+                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}', '${data.customColor || ''}')" class="text-xs text-slate-300 hover:text-white px-2 py-1 rounded hover:bg-black/20">Sửa</button>
                   <button onclick="deleteCard('${id}')" class="text-xs text-rose-300 hover:text-rose-100 px-2 py-1 rounded hover:bg-rose-500/20">Xóa</button>
                 </div>
               </div>
@@ -269,7 +269,7 @@
                   <span>🎯 Hoàn thưởng:</span>
                   <span class="font-bold ${theme.accentText}">${rewardEstimate}</span>
                 </div>
-                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs text-white/80 italic">💡 ${data.rewardNote}</div>` : ''}
+                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs text-slate-200 italic">💡 ${data.rewardNote}</div>` : ''}
               </div>
             </div>
 
@@ -281,7 +281,7 @@
               </div>
               <div class="flex justify-between items-center gap-2 pt-1">
                 <div class="flex gap-1">
-                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
+                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs text-slate-200 hover:text-white bg-black/20 hover:bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
                   <button onclick="closeMonthAuto('${id}', '${data.name}', ${current}, ${target}, '${currentCycle}')" class="text-xs text-amber-300 hover:text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1.5 rounded-lg border border-amber-500/30">🔒 Chốt tháng</button>
                 </div>
                 <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-3.5 py-1.5 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
@@ -523,19 +523,48 @@
       });
     };
 
-    // Hàm chọn Theme ngân hàng + Tông màu Đen VIP mới
+    // Hàm chọn Theme ngân hàng + Tông màu mới (Trắng AMEX & Xanh Bơ Avocado)
     function getBankThemeCustom(cardName = '', customColor = '') {
       const name = cardName.toUpperCase();
       let colorType = customColor;
 
       if (!colorType) {
-        if (name.includes('TP')) colorType = 'purple';
+        if (name.includes('SUPER CARD') || name.includes('6700')) colorType = 'white_amex';
+        else if (name.includes('MAX') || name.includes('7503')) colorType = 'avocado';
+        else if (name.includes('TP')) colorType = 'purple';
         else if (name.includes('VP')) colorType = 'emerald';
-        else if (name.includes('VIB')) colorType = 'blue';
-        else colorType = 'slate';
+        else colorType = 'black';
       }
 
       switch(colorType) {
+        case 'white_amex':
+          return {
+            cardBg: 'bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 text-slate-800',
+            headerText: 'text-slate-900 font-extrabold tracking-tight',
+            subText: 'text-slate-600',
+            badgeBg: 'bg-slate-800/10 text-slate-700 border-slate-400/40',
+            progressBg: 'bg-slate-300/80',
+            progressBar: 'bg-slate-700',
+            spendText: 'text-slate-800 font-semibold',
+            rewardBg: 'bg-slate-900/10 text-slate-800 border-slate-400/50',
+            btnBg: 'bg-slate-900 hover:bg-slate-800 text-white font-medium',
+            inputBg: 'bg-white/90 text-slate-900 placeholder-slate-400 border-slate-300 focus:ring-slate-500',
+            accentText: 'text-slate-900 font-bold'
+          };
+        case 'avocado':
+          return {
+            cardBg: 'bg-gradient-to-br from-lime-900 via-emerald-950 to-slate-950',
+            headerText: 'text-lime-200 font-bold',
+            subText: 'text-lime-300/80',
+            badgeBg: 'bg-lime-500/20 text-lime-200 border-lime-500/40',
+            progressBg: 'bg-black/60',
+            progressBar: 'bg-lime-400',
+            spendText: 'text-lime-200',
+            rewardBg: 'bg-lime-950/60 text-lime-200 border-lime-600/40',
+            btnBg: 'bg-lime-500 hover:bg-lime-400 text-slate-950 font-semibold',
+            inputBg: 'bg-black/60 text-lime-100 placeholder-lime-600 border-lime-800/60 focus:ring-lime-400',
+            accentText: 'text-lime-300'
+          };
         case 'black':
           return {
             cardBg: 'bg-gradient-to-br from-slate-950 via-gray-900 to-black',
@@ -577,34 +606,6 @@
             btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white',
             inputBg: 'bg-emerald-900/60 text-white placeholder-emerald-400 border-emerald-700 focus:ring-emerald-400',
             accentText: 'text-emerald-300'
-          };
-        case 'rose':
-          return {
-            cardBg: 'bg-rose-950/80',
-            headerText: 'text-rose-100',
-            subText: 'text-rose-300',
-            badgeBg: 'bg-rose-900/60 text-rose-200 border-rose-700',
-            progressBg: 'bg-rose-950',
-            progressBar: 'bg-rose-400',
-            spendText: 'text-rose-200',
-            rewardBg: 'bg-rose-900/40 text-rose-200 border-rose-700/50',
-            btnBg: 'bg-rose-600 hover:bg-rose-500 text-white',
-            inputBg: 'bg-rose-900/60 text-white placeholder-rose-400 border-rose-700 focus:ring-rose-400',
-            accentText: 'text-rose-300'
-          };
-        case 'amber':
-          return {
-            cardBg: 'bg-amber-950/80',
-            headerText: 'text-amber-100',
-            subText: 'text-amber-300',
-            badgeBg: 'bg-amber-900/60 text-amber-200 border-amber-700',
-            progressBg: 'bg-amber-950',
-            progressBar: 'bg-amber-400',
-            spendText: 'text-amber-200',
-            rewardBg: 'bg-amber-900/40 text-amber-200 border-amber-700/50',
-            btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900',
-            inputBg: 'bg-amber-900/60 text-white placeholder-amber-400 border-amber-700 focus:ring-amber-400',
-            accentText: 'text-amber-300'
           };
         case 'blue':
         default:
@@ -669,7 +670,7 @@
       document.getElementById("card-name").value = name;
       document.getElementById("card-target").value = target;
       document.getElementById("card-statement").value = statementDay;
-      document.getElementById("card-color").value = customColor || 'black';
+      document.getElementById("card-color").value = customColor || 'white_amex';
       document.getElementById("card-reward").value = rewardNote;
       document.getElementById("modal-title").innerText = "Chỉnh Sửa Thẻ";
       openModal('modal-add');
