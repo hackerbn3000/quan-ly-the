@@ -40,38 +40,43 @@
       </div>
     </header>
 
-    <!-- Bố cục 3 Cột: Quy Tắc (Trái) | Danh Sách Thẻ (Giữa) | Ghi Chú (Phải) -->
+    <!-- Bố cục: Danh Sách Thẻ (Bên Trái - 3 phần) | Quy Tắc & Ghi Chú (Bên Phải - 1 phần) -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
       
-      <!-- Cột Trái: Mục Quy Tắc Quản Lý Thẻ -->
-      <div class="lg:col-span-1 bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 h-fit">
-        <h2 class="text-sm font-bold text-indigo-400 mb-3 flex items-center justify-between">
-          <span>📌 Quy Tắc Dùng Thẻ</span>
-          <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 hover:bg-indigo-600/50">Lưu</button>
-        </h2>
-        <textarea id="rules-textarea" rows="12" placeholder="- Thẻ VIB: Quẹt danh mục Ẩm thực/Khách sạn để tối ưu điểm...&#10;- Thẻ VPBank: Tiêu mốc 3.3tr đạt max xu...&#10;- Kiểm tra MCC trước khi thanh toán lớn." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed"></textarea>
-      </div>
-
-      <!-- Cột Giữa: Danh sách Thẻ Tín Dụng (Chiếm 2 cột) -->
-      <div class="lg:col-span-2 space-y-4">
-        <div id="cards-container" class="grid grid-cols-1 gap-6">
-          <p class="text-slate-400 text-center py-8">Đang tải dữ liệu thẻ từ Firebase...</p>
+      <!-- Cột Trái: Danh sách Thẻ Tín Dụng (Luôn hiển thị 2 thẻ/hàng) -->
+      <div class="lg:col-span-3">
+        <div id="cards-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <p class="text-slate-400 text-center col-span-2 py-8">Đang tải dữ liệu thẻ từ Firebase...</p>
         </div>
       </div>
 
-      <!-- Cột Phải: Mục Ghi Chú Nhanh -->
-      <div class="lg:col-span-1 bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 h-fit">
-        <h2 class="text-sm font-bold text-amber-400 mb-3 flex items-center justify-between">
-          <span>📝 Ghi Chú Nhanh</span>
-          <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 hover:bg-amber-600/50">Lưu</button>
-        </h2>
-        <textarea id="notes-textarea" rows="12" placeholder="- Cần thanh toán trả góp ngày 15...&#10;- Kiểm tra cashback TPBank tháng trước...&#10;- Ghi nhớ các mã giảm giá mua sắm..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed"></textarea>
+      <!-- Cột Phải: Gom Quy Tắc & Ghi Chú vào cùng một bên -->
+      <div class="lg:col-span-1 space-y-5">
+        
+        <!-- Mục Quy Tắc -->
+        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60">
+          <h2 class="text-sm font-bold text-indigo-400 mb-2 flex items-center justify-between">
+            <span>📌 Quy Tắc Dùng Thẻ</span>
+            <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 hover:bg-indigo-600/50">Lưu</button>
+          </h2>
+          <textarea id="rules-textarea" rows="7" placeholder="- Thẻ VIB: Quẹt Ẩm thực/Khách sạn...&#10;- Thẻ VPBank: Tiêu mốc 3.3tr max xu...&#10;- Kiểm tra MCC trước khi thanh toán." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed"></textarea>
+        </div>
+
+        <!-- Mục Ghi Chú Nhanh -->
+        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60">
+          <h2 class="text-sm font-bold text-amber-400 mb-2 flex items-center justify-between">
+            <span>📝 Ghi Chú Nhanh</span>
+            <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 hover:bg-amber-600/50">Lưu</button>
+          </h2>
+          <textarea id="notes-textarea" rows="7" placeholder="- Cần thanh toán trả góp ngày 15...&#10;- Kiểm tra cashback TPBank...&#10;- Mã giảm giá mua sắm..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed"></textarea>
+        </div>
+
       </div>
 
     </div>
   </div>
 
-  <!-- Modal Thêm/Sửa Thẻ (Có chọn màu) -->
+  <!-- Modal Thêm/Sửa Thẻ (Có màu Đen VIP) -->
   <div id="modal-add" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
     <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl border border-slate-700 text-slate-100">
       <h2 id="modal-title" class="text-lg font-bold mb-4">Thêm Thẻ Tín Dụng</h2>
@@ -94,12 +99,13 @@
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Tông Màu Thẻ</label>
           <select id="card-color" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-            <option value="blue">Xanh Dương (VIB / Techcombank)</option>
-            <option value="purple">Tím (TPBank / VPBank EVO)</option>
-            <option value="emerald">Xanh Lá (VPBank / Sacombank)</option>
-            <option value="rose">Đỏ Rose (HSBC / Citi / MB)</option>
-            <option value="amber">Vàng Hoàng Gia (VPBank Diamond / Platinum)</option>
-            <option value="slate">Xám Slate Neutral (Mặc định)</option>
+            <option value="black">🖤 Đen VIP (Black Platinum / Metal)</option>
+            <option value="blue">💙 Xanh Dương (VIB / Techcombank)</option>
+            <option value="purple">💜 Tím (TPBank / VPBank EVO)</option>
+            <option value="emerald">💚 Xanh Lá (VPBank / Sacombank)</option>
+            <option value="rose">❤️ Đỏ Rose (HSBC / MB)</option>
+            <option value="amber">💛 Vàng Hoàng Gia (VPBank Diamond)</option>
+            <option value="slate">🩶 Xám Neutral (Mặc định)</option>
           </select>
         </div>
         <div>
@@ -121,9 +127,7 @@
         <h2 class="text-lg font-bold">📊 Thống Kê Chi Tiêu Tổng Hợp</h2>
         <button onclick="closeModal('modal-stats')" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
-      <div id="stats-content" class="space-y-4 overflow-y-auto pr-1 flex-1 text-xs">
-        <!-- Nội dung thống kê đổ tại đây -->
-      </div>
+      <div id="stats-content" class="space-y-4 overflow-y-auto pr-1 flex-1 text-xs"></div>
     </div>
   </div>
 
@@ -154,7 +158,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // CẤU HÌNH FIREBASE CỦA BẠN (GIỮ NGUYÊN ACCURATE CONFIG)
+    // CẤU HÌNH FIREBASE THỰC TẾ CỦA BẠN
     const firebaseConfig = {
       apiKey: "AIzaSyCmtLvK0_CZ7EA_zbUjs01lqxN6ifO87Ok",
       authDomain: "quan-ly-the-tin-dung.firebaseapp.com",
@@ -190,7 +194,6 @@
       alert("Đã lưu Ghi chú thành công!");
     };
 
-    // Hàm lấy chu kỳ Tháng/Năm hiện tại mặc định (Format MM/YYYY)
     function getCurrentCycleString(offsetMonth = 0) {
       const now = new Date();
       now.setMonth(now.getMonth() + offsetMonth);
@@ -203,7 +206,7 @@
     onSnapshot(cardsCollection, (snapshot) => {
       const container = document.getElementById("cards-container");
       if (snapshot.empty) {
-        container.innerHTML = `<div class="text-center py-12 bg-slate-800/50 rounded-xl border border-slate-700 text-slate-400">Chưa có thẻ nào. Nhấn "+ Thêm Thẻ Mới" để tạo thẻ đầu tiên!</div>`;
+        container.innerHTML = `<div class="col-span-2 text-center py-12 bg-slate-800/50 rounded-xl border border-slate-700 text-slate-400">Chưa có thẻ nào. Nhấn "+ Thêm Thẻ Mới" để tạo thẻ đầu tiên!</div>`;
         return;
       }
       container.innerHTML = "";
@@ -223,13 +226,13 @@
         const rewardEstimate = calculateRewardEstimate(data.name, current, target);
 
         let countdownBadge = statementInfo.isToday 
-          ? `<span class="bg-rose-500 text-white font-semibold text-xs px-2 py-0.5 rounded-full animate-pulse shadow">Hôm nay chốt sao kê!</span>`
+          ? `<span class="bg-rose-500 text-white font-semibold text-xs px-2 py-0.5 rounded-full animate-pulse shadow">Hôm nay sao kê!</span>`
           : statementInfo.daysLeft <= 3
           ? `<span class="bg-amber-500 text-slate-900 font-semibold text-xs px-2 py-0.5 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày</span>`
           : `<span class="${theme.badgeBg} text-xs px-2 py-0.5 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
 
         container.innerHTML += `
-          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-5 flex flex-col justify-between transition-all duration-300">
+          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300">
             <div>
               <div class="flex justify-between items-start mb-3">
                 <div>
@@ -249,7 +252,7 @@
               </div>
 
               <!-- Tiến trình -->
-              <div class="mt-4">
+              <div class="mt-3">
                 <div class="flex justify-between text-xs font-semibold mb-1">
                   <span class="${theme.spendText}">Đã quẹt: ${current.toLocaleString('vi-VN')} đ</span>
                   <span class="${displayPercent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${displayPercent}%</span>
@@ -263,7 +266,7 @@
               <!-- Thưởng & Ghi chú -->
               <div class="mt-3 space-y-2">
                 <div class="p-2.5 ${theme.rewardBg} rounded-lg text-xs border backdrop-blur-sm flex justify-between items-center">
-                  <span>🎯 Tiến độ hoàn thưởng:</span>
+                  <span>🎯 Hoàn thưởng:</span>
                   <span class="font-bold ${theme.accentText}">${rewardEstimate}</span>
                 </div>
                 ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs text-white/80 italic">💡 ${data.rewardNote}</div>` : ''}
@@ -271,9 +274,9 @@
             </div>
 
             <!-- Cập nhật chi tiêu & Chốt tháng -->
-            <div class="mt-5 pt-4 border-t border-white/10 space-y-2">
+            <div class="mt-4 pt-3 border-t border-white/10 space-y-2">
               <div class="flex gap-2">
-                <input type="number" id="spend-input-${id}" placeholder="+ Số tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-2/3 outline-none border focus:ring-1">
+                <input type="number" id="spend-input-${id}" placeholder="+ Tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-2/3 outline-none border focus:ring-1">
                 <input type="text" id="spend-note-${id}" placeholder="Ghi chú" class="${theme.inputBg} rounded-lg p-2 text-xs w-1/3 outline-none border focus:ring-1">
               </div>
               <div class="flex justify-between items-center gap-2 pt-1">
@@ -281,7 +284,7 @@
                   <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
                   <button onclick="closeMonthAuto('${id}', '${data.name}', ${current}, ${target}, '${currentCycle}')" class="text-xs text-amber-300 hover:text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1.5 rounded-lg border border-amber-500/30">🔒 Chốt tháng</button>
                 </div>
-                <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-4 py-1.5 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
+                <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-3.5 py-1.5 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
               </div>
             </div>
           </div>
@@ -289,7 +292,7 @@
       });
     });
 
-    // Thêm/Sửa Thẻ kèm Tông màu tùy chỉnh
+    // Thêm/Sửa Thẻ
     document.getElementById("card-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const id = document.getElementById("card-id").value.trim();
@@ -317,12 +320,11 @@
       closeModal('modal-add');
     });
 
-    // Chốt sổ tự động nhảy sang tháng tiếp theo
+    // Chốt sổ tự động
     window.closeMonthAuto = async (id, name, current, target, currentCycle) => {
       const confirmMsg = `Xác nhận chốt sổ thẻ ${name} cho chu kỳ [${currentCycle}] với tổng chi: ${current.toLocaleString('vi-VN')} đ?\nThẻ sẽ tự động nhảy sang chu kỳ tháng tiếp theo!`;
       if (!confirm(confirmMsg)) return;
 
-      // Parse tháng/năm hiện tại để cộng 1 tháng
       const [mStr, yStr] = currentCycle.split('/');
       let m = parseInt(mStr);
       let y = parseInt(yStr);
@@ -333,7 +335,6 @@
       }
       const nextCycle = `${String(m).padStart(2, '0')}/${y}`;
 
-      // Lưu lưu trữ tháng cũ
       await addDoc(collection(db, "monthly_archive"), {
         cardName: name,
         month: `Tháng ${currentCycle}`,
@@ -344,7 +345,6 @@
         closedAt: new Date().toLocaleString('vi-VN')
       });
 
-      // Reset thẻ & Cập nhật kỳ mới
       await updateDoc(doc(db, "cards", id), {
         currentSpending: 0,
         currentCycle: nextCycle,
@@ -354,7 +354,7 @@
       alert(`Đã chốt sổ kỳ ${currentCycle}! Kỳ tiếp theo của thẻ ${name} hiện tại là: ${nextCycle}`);
     };
 
-    // Xuất file Backup JSON đầy đủ
+    // Xuất file Backup JSON
     window.exportBackupData = async () => {
       const cardsSnap = await getDocs(cardsCollection);
       const cardsData = cardsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -377,7 +377,7 @@
       downloadAnchor.remove();
     };
 
-    // Mở Modal Thống Kê Chi Tiêu Hàng Tháng - Hàng Năm
+    // Modal Thống Kê
     window.openStatsModal = async () => {
       const snapshot = await getDocs(collection(db, "monthly_archive"));
       const container = document.getElementById("stats-content");
@@ -389,8 +389,6 @@
       }
 
       const records = snapshot.docs.map(d => d.data());
-      
-      // Thống kê theo Năm
       const yearStats = {};
       const monthStats = {};
 
@@ -454,7 +452,7 @@
       }
     };
 
-    // Lịch sử giao dịch & Xóa
+    // Lịch sử giao dịch
     window.viewHistory = async (id, cardName) => {
       document.getElementById("history-modal-title").innerText = `Lịch Sử Giao Dịch: ${cardName}`;
       const cardSnap = await getDoc(doc(db, "cards", id));
@@ -525,7 +523,7 @@
       });
     };
 
-    // Hàm chọn Theme ngân hàng + Tông màu tùy chọn (Color Picker)
+    // Hàm chọn Theme ngân hàng + Tông màu Đen VIP mới
     function getBankThemeCustom(cardName = '', customColor = '') {
       const name = cardName.toUpperCase();
       let colorType = customColor;
@@ -538,6 +536,20 @@
       }
 
       switch(colorType) {
+        case 'black':
+          return {
+            cardBg: 'bg-gradient-to-br from-slate-950 via-gray-900 to-black',
+            headerText: 'text-amber-200 font-extrabold tracking-wide',
+            subText: 'text-gray-400',
+            badgeBg: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+            progressBg: 'bg-black/80',
+            progressBar: 'bg-gradient-to-r from-amber-500 to-yellow-300',
+            spendText: 'text-amber-200',
+            rewardBg: 'bg-black/60 text-amber-300 border-amber-500/30',
+            btnBg: 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold',
+            inputBg: 'bg-black/80 text-amber-100 placeholder-gray-500 border-gray-800 focus:ring-amber-400',
+            accentText: 'text-amber-400'
+          };
         case 'purple':
           return {
             cardBg: 'bg-purple-950/80',
@@ -657,7 +669,7 @@
       document.getElementById("card-name").value = name;
       document.getElementById("card-target").value = target;
       document.getElementById("card-statement").value = statementDay;
-      document.getElementById("card-color").value = customColor || 'blue';
+      document.getElementById("card-color").value = customColor || 'black';
       document.getElementById("card-reward").value = rewardNote;
       document.getElementById("modal-title").innerText = "Chỉnh Sửa Thẻ";
       openModal('modal-add');
