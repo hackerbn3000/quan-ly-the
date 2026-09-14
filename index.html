@@ -6,16 +6,6 @@
   <title>Quản Lý Thẻ Tín Dụng Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts: Inter & JetBrains Mono cho số liệu cực sắc nét -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
-
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .font-num { font-family: 'JetBrains Mono', monospace; }
-  </style>
-
   <!-- Cấu hình PWA -->
   <meta name="theme-color" content="#0f172a">
   <meta name="mobile-web-app-capable" content="yes">
@@ -29,29 +19,29 @@
     <!-- Header -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-800">
       <div>
-        <h1 class="text-2xl font-extrabold text-white flex items-center gap-2 tracking-tight">
+        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
           💳 Quản Lý Thẻ Tín Dụng Pro
         </h1>
         <p class="text-xs text-slate-400 mt-1">Theo dõi chi tiêu, đếm ngược sao kê & tích thưởng chuyên nghiệp</p>
       </div>
       <div class="flex flex-wrap gap-2 w-full md:w-auto">
-        <button onclick="openStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3.5 py-2 rounded-lg text-xs border border-slate-700 transition">
+        <button onclick="openStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700">
           📊 Thống Kê
         </button>
-        <button onclick="openMonthlyHistory()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3.5 py-2 rounded-lg text-xs border border-slate-700 transition">
+        <button onclick="openMonthlyHistory()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700">
           📜 Lịch Sử Tháng
         </button>
-        <button onclick="exportBackupData()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-3.5 py-2 rounded-lg text-xs shadow transition">
+        <button onclick="exportBackupData()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-3 py-2 rounded-lg text-xs shadow">
           📥 Xuất Backup
         </button>
-        <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow transition">
+        <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow">
           + Thêm Thẻ Mới
         </button>
       </div>
     </header>
 
-    <!-- Bố cục: Danh Sách Thẻ (3 Cột) | Quy Tắc & Ghi Chú (1 Cột) -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+    <!-- Bố cục: Danh Sách Thẻ (Trái - 3/4) | Quy Tắc & Ghi Chú (Phải - 1/4) -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
       
       <!-- Cột Trái: Danh sách Thẻ Tín Dụng (2 thẻ / 1 hàng) -->
       <div class="lg:col-span-3">
@@ -60,25 +50,25 @@
         </div>
       </div>
 
-      <!-- Cột Phải: Quy Tắc & Ghi Chú (Vừa khít bằng 2 thẻ xếp dọc) -->
-      <div class="lg:col-span-1 flex flex-col gap-4">
+      <!-- Cột Phải: Gom Quy Tắc & Ghi Chú (Chiều dài bằng 2 thẻ xếp dọc) -->
+      <div class="lg:col-span-1 flex flex-col gap-5 h-full">
         
         <!-- Mục Quy Tắc -->
-        <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 shadow-md">
-          <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 flex-1 flex flex-col">
+          <h2 class="text-sm font-bold text-indigo-400 mb-2 flex items-center justify-between shrink-0">
             <span>📌 Quy Tắc Dùng Thẻ</span>
-            <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/40 hover:bg-indigo-600/60 transition">Lưu</button>
+            <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 hover:bg-indigo-600/50">Lưu</button>
           </h2>
-          <textarea id="rules-textarea" placeholder="- Gói CAKE lên Premium...&#10;- VIB MAX: MAX CAP 1500k...&#10;- Thẻ VIB: Ưu tiên Ẩm thực..." class="w-full h-[225px] bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed font-normal"></textarea>
+          <textarea id="rules-textarea" placeholder="- Thẻ VIB: Quẹt Ẩm thực/Khách sạn...&#10;- Thẻ VPBank: Tiêu mốc 3.3tr max xu...&#10;- Kiểm tra MCC trước khi thanh toán." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed flex-1 min-h-[160px]"></textarea>
         </div>
 
         <!-- Mục Ghi Chú Nhanh -->
-        <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 shadow-md">
-          <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 flex-1 flex flex-col">
+          <h2 class="text-sm font-bold text-amber-400 mb-2 flex items-center justify-between shrink-0">
             <span>📝 Ghi Chú Nhanh</span>
-            <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40 hover:bg-amber-600/60 transition">Lưu</button>
+            <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 hover:bg-amber-600/50">Lưu</button>
           </h2>
-          <textarea id="notes-textarea" placeholder="- Check hoàn 5tr7 của thẻ VIB...&#10;- 14/09/2026: Chèn thẻ VIB MAX...&#10;- Nhắc nộp tiền sao kê..." class="w-full h-[225px] bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed font-normal"></textarea>
+          <textarea id="notes-textarea" placeholder="- Cần thanh toán trả góp ngày 15...&#10;- Kiểm tra cashback TPBank...&#10;- Mã giảm giá mua sắm..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed flex-1 min-h-[160px]"></textarea>
         </div>
 
       </div>
@@ -94,7 +84,7 @@
         <input type="hidden" id="card-id" value="">
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Tên Thẻ / Ngân Hàng</label>
-          <input type="text" id="card-name" placeholder="VD: VIB SUPER CARD - 6700" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          <input type="text" id="card-name" placeholder="VD: VIB Super Card - 6700" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -110,8 +100,8 @@
           <label class="block text-xs font-semibold text-slate-300 mb-1">Tông Màu Thẻ</label>
           <select id="card-color" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
             <option value="white_amex">⚪ Trắng Silver AMEX (VIB Super Card)</option>
-            <option value="avocado">🥑 Xanh Bơ Avocado Toàn Thẻ (VIB Max Card)</option>
-            <option value="black">🖤 Đen VIP Titanium (Black Platinum)</option>
+            <option value="avocado">🥑 Xanh Bơ Avocado (VIB Max Card)</option>
+            <option value="black">🖤 Đen VIP (Black Titanium / Metal)</option>
             <option value="blue">💙 Xanh Dương (VIB Standard)</option>
             <option value="purple">💜 Tím (TPBank / VPBank EVO)</option>
             <option value="emerald">💚 Xanh Lá (VPBank S Reward)</option>
@@ -236,19 +226,19 @@
         const rewardEstimate = calculateRewardEstimate(data.name, current, target);
 
         let countdownBadge = statementInfo.isToday 
-          ? `<span class="bg-rose-500 text-white font-semibold text-[11px] px-2 py-0.5 rounded-full animate-pulse shadow">Hôm nay sao kê!</span>`
+          ? `<span class="bg-rose-500 text-white font-semibold text-xs px-2 py-0.5 rounded-full animate-pulse shadow">Hôm nay sao kê!</span>`
           : statementInfo.daysLeft <= 3
-          ? `<span class="bg-amber-500 text-slate-900 font-semibold text-[11px] px-2 py-0.5 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày</span>`
-          : `<span class="${theme.badgeBg} text-[11px] px-2 py-0.5 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
+          ? `<span class="bg-amber-500 text-slate-900 font-semibold text-xs px-2 py-0.5 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày</span>`
+          : `<span class="${theme.badgeBg} text-xs px-2 py-0.5 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
 
         container.innerHTML += `
-          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-5 flex flex-col justify-between transition-all duration-300 min-h-[300px]">
+          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300">
             <div>
-              <div class="flex justify-between items-start mb-2">
+              <div class="flex justify-between items-start mb-3">
                 <div>
                   <div class="flex items-center gap-2">
-                    <h3 class="font-bold text-base tracking-tight ${theme.headerText}">${data.name}</h3>
-                    <span class="text-[10px] ${theme.badgeBg} font-mono px-2 py-0.5 rounded border">Kỳ: ${currentCycle}</span>
+                    <h3 class="font-bold text-lg ${theme.headerText}">${data.name}</h3>
+                    <span class="text-[10px] bg-black/20 text-slate-300 px-2 py-0.5 rounded border border-white/10">Kỳ: ${currentCycle}</span>
                   </div>
                   <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs ${theme.subText}">Sao kê: Ngày ${data.statementDay === 31 ? 'cuối tháng' : data.statementDay}</span>
@@ -256,42 +246,42 @@
                   </div>
                 </div>
                 <div class="space-x-1 shrink-0">
-                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}', '${data.customColor || ''}')" class="text-xs font-medium ${theme.subText} hover:opacity-100 px-2 py-1 rounded bg-black/10 hover:bg-black/20">Sửa</button>
-                  <button onclick="deleteCard('${id}')" class="text-xs font-medium text-rose-400 hover:text-rose-300 px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20">Xóa</button>
+                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}', '${data.customColor || ''}')" class="text-xs text-slate-300 hover:text-white px-2 py-1 rounded hover:bg-black/20">Sửa</button>
+                  <button onclick="deleteCard('${id}')" class="text-xs text-rose-300 hover:text-rose-100 px-2 py-1 rounded hover:bg-rose-500/20">Xóa</button>
                 </div>
               </div>
 
-              <!-- Tiến trình chi tiêu (Phông số JetBrains Mono cực rõ) -->
+              <!-- Tiến trình -->
               <div class="mt-3">
                 <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span class="${theme.spendText}">Đã quẹt: <strong class="font-num text-sm">${current.toLocaleString('vi-VN')} đ</strong></span>
-                  <span class="font-num text-sm ${displayPercent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${displayPercent}%</span>
+                  <span class="${theme.spendText}">Đã quẹt: ${current.toLocaleString('vi-VN')} đ</span>
+                  <span class="${displayPercent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${displayPercent}%</span>
                 </div>
                 <div class="w-full ${theme.progressBg} rounded-full h-3 p-0.5 border border-white/10">
-                  <div class="${displayPercent >= 100 ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
+                  <div class="${displayPercent >= 100 ? 'bg-emerald-400' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
                 </div>
-                <p class="text-xs ${theme.subText} mt-1 text-right">Mốc: <span class="font-num">${target.toLocaleString('vi-VN')} đ</span></p>
+                <p class="text-xs ${theme.subText} mt-1 text-right">Mốc: ${target.toLocaleString('vi-VN')} đ</p>
               </div>
 
               <!-- Thưởng & Ghi chú -->
-              <div class="mt-3 space-y-1.5">
+              <div class="mt-3 space-y-2">
                 <div class="p-2.5 ${theme.rewardBg} rounded-lg text-xs border backdrop-blur-sm flex justify-between items-center">
                   <span>🎯 Hoàn thưởng:</span>
-                  <span class="font-bold font-num ${theme.accentText}">${rewardEstimate}</span>
+                  <span class="font-bold ${theme.accentText}">${rewardEstimate}</span>
                 </div>
-                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs ${theme.spendText} italic">💡 ${data.rewardNote}</div>` : ''}
+                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs text-slate-200 italic">💡 ${data.rewardNote}</div>` : ''}
               </div>
             </div>
 
             <!-- Cập nhật chi tiêu & Chốt tháng -->
             <div class="mt-4 pt-3 border-t border-white/10 space-y-2">
               <div class="flex gap-2">
-                <input type="number" id="spend-input-${id}" placeholder="+ Tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs font-num w-2/3 outline-none border focus:ring-1">
+                <input type="number" id="spend-input-${id}" placeholder="+ Tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-2/3 outline-none border focus:ring-1">
                 <input type="text" id="spend-note-${id}" placeholder="Ghi chú" class="${theme.inputBg} rounded-lg p-2 text-xs w-1/3 outline-none border focus:ring-1">
               </div>
               <div class="flex justify-between items-center gap-2 pt-1">
                 <div class="flex gap-1">
-                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs ${theme.subText} hover:opacity-100 bg-black/10 hover:bg-black/20 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
+                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs text-slate-200 hover:text-white bg-black/20 hover:bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
                   <button onclick="closeMonthAuto('${id}', '${data.name}', ${current}, ${target}, '${currentCycle}')" class="text-xs text-amber-300 hover:text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1.5 rounded-lg border border-amber-500/30">🔒 Chốt tháng</button>
                 </div>
                 <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-3.5 py-1.5 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
@@ -416,7 +406,7 @@
           <div class="space-y-1">
       `;
       for (const [yr, total] of Object.entries(yearStats)) {
-        html += `<div class="flex justify-between border-b border-slate-800 pb-1"><span>Năm ${yr}:</span> <span class="font-bold font-num text-emerald-400">${total.toLocaleString('vi-VN')} đ</span></div>`;
+        html += `<div class="flex justify-between border-b border-slate-800 pb-1"><span>Năm ${yr}:</span> <span class="font-bold text-emerald-400">${total.toLocaleString('vi-VN')} đ</span></div>`;
       }
       html += `</div></div>`;
 
@@ -426,7 +416,7 @@
           <div class="space-y-1">
       `;
       for (const [m, total] of Object.entries(monthStats)) {
-        html += `<div class="flex justify-between border-b border-slate-800 pb-1"><span>${m}:</span> <span class="font-bold font-num text-slate-200">${total.toLocaleString('vi-VN')} đ</span></div>`;
+        html += `<div class="flex justify-between border-b border-slate-800 pb-1"><span>${m}:</span> <span class="font-bold text-slate-200">${total.toLocaleString('vi-VN')} đ</span></div>`;
       }
       html += `</div></div>`;
 
@@ -475,7 +465,7 @@
         container.innerHTML = history.map((item, idx) => `
           <div class="bg-slate-900 border border-slate-700/60 rounded-lg p-3 flex justify-between items-center text-xs">
             <div>
-              <p class="font-bold font-num text-emerald-400">+${item.amount.toLocaleString('vi-VN')} đ</p>
+              <p class="font-bold text-emerald-400">+${item.amount.toLocaleString('vi-VN')} đ</p>
               <p class="text-slate-300 mt-0.5">${item.note}</p>
               <p class="text-slate-500 text-[10px]">${item.timestamp}</p>
             </div>
@@ -521,8 +511,8 @@
                   <span class="${isReached ? 'text-emerald-400' : 'text-amber-400'}">${isReached ? '🎉 Đạt Mốc' : 'Chưa Đạt'}</span>
                 </div>
                 <div class="flex justify-between text-slate-300">
-                  <span>Tổng chi: <strong class="font-num">${d.totalSpent.toLocaleString('vi-VN')} đ</strong></span>
-                  <span>Mốc: <span class="font-num">${d.target.toLocaleString('vi-VN')} đ</span></span>
+                  <span>Tổng chi: ${d.totalSpent.toLocaleString('vi-VN')} đ</span>
+                  <span>Mốc: ${d.target.toLocaleString('vi-VN')} đ</span>
                 </div>
                 <p class="text-[10px] text-slate-500">Chốt lúc: ${d.closedAt}</p>
               </div>
@@ -533,7 +523,7 @@
       });
     };
 
-    // Hàm chọn Theme ngân hàng (Tối ưu tương phản cực cao)
+    // Hàm chọn Theme ngân hàng + Tông màu mới (Trắng AMEX & Xanh Bơ Avocado)
     function getBankThemeCustom(cardName = '', customColor = '') {
       const name = cardName.toUpperCase();
       let colorType = customColor;
@@ -549,35 +539,35 @@
       switch(colorType) {
         case 'white_amex':
           return {
-            cardBg: 'bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200 text-slate-900 border-slate-300 shadow-lg',
+            cardBg: 'bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 text-slate-800',
             headerText: 'text-slate-900 font-extrabold tracking-tight',
-            subText: 'text-slate-600 font-medium',
-            badgeBg: 'bg-slate-800 text-slate-100 border-slate-700',
-            progressBg: 'bg-slate-300',
-            progressBar: 'bg-slate-800',
-            spendText: 'text-slate-900 font-semibold',
-            rewardBg: 'bg-slate-300/60 text-slate-900 border-slate-400/60 font-medium',
-            btnBg: 'bg-slate-900 hover:bg-slate-800 text-white font-semibold',
-            inputBg: 'bg-white text-slate-900 placeholder-slate-400 border-slate-300 focus:ring-slate-500',
+            subText: 'text-slate-600',
+            badgeBg: 'bg-slate-800/10 text-slate-700 border-slate-400/40',
+            progressBg: 'bg-slate-300/80',
+            progressBar: 'bg-slate-700',
+            spendText: 'text-slate-800 font-semibold',
+            rewardBg: 'bg-slate-900/10 text-slate-800 border-slate-400/50',
+            btnBg: 'bg-slate-900 hover:bg-slate-800 text-white font-medium',
+            inputBg: 'bg-white/90 text-slate-900 placeholder-slate-400 border-slate-300 focus:ring-slate-500',
             accentText: 'text-slate-900 font-bold'
           };
         case 'avocado':
           return {
-            cardBg: 'bg-[#1e392a] text-lime-100 border-lime-600/40 shadow-lg',
+            cardBg: 'bg-gradient-to-br from-lime-900 via-emerald-950 to-slate-950',
             headerText: 'text-lime-200 font-bold',
             subText: 'text-lime-300/80',
-            badgeBg: 'bg-lime-900/80 text-lime-200 border-lime-600/50',
-            progressBg: 'bg-black/50',
+            badgeBg: 'bg-lime-500/20 text-lime-200 border-lime-500/40',
+            progressBg: 'bg-black/60',
             progressBar: 'bg-lime-400',
-            spendText: 'text-lime-100',
-            rewardBg: 'bg-black/40 text-lime-200 border-lime-600/40',
-            btnBg: 'bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold',
-            inputBg: 'bg-black/50 text-lime-100 placeholder-lime-600/70 border-lime-700/60 focus:ring-lime-400',
+            spendText: 'text-lime-200',
+            rewardBg: 'bg-lime-950/60 text-lime-200 border-lime-600/40',
+            btnBg: 'bg-lime-500 hover:bg-lime-400 text-slate-950 font-semibold',
+            inputBg: 'bg-black/60 text-lime-100 placeholder-lime-600 border-lime-800/60 focus:ring-lime-400',
             accentText: 'text-lime-300'
           };
         case 'black':
           return {
-            cardBg: 'bg-gradient-to-br from-slate-950 via-gray-900 to-black text-slate-100 border-amber-500/20 shadow-lg',
+            cardBg: 'bg-gradient-to-br from-slate-950 via-gray-900 to-black',
             headerText: 'text-amber-200 font-extrabold tracking-wide',
             subText: 'text-gray-400',
             badgeBg: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
@@ -591,44 +581,44 @@
           };
         case 'purple':
           return {
-            cardBg: 'bg-purple-950/90 text-purple-100 border-purple-800/60 shadow-lg',
-            headerText: 'text-purple-100 font-bold',
+            cardBg: 'bg-purple-950/80',
+            headerText: 'text-purple-100',
             subText: 'text-purple-300',
-            badgeBg: 'bg-purple-900/80 text-purple-200 border-purple-700',
+            badgeBg: 'bg-purple-900/60 text-purple-200 border-purple-700',
             progressBg: 'bg-purple-950',
             progressBar: 'bg-amber-400',
             spendText: 'text-purple-200',
             rewardBg: 'bg-purple-900/40 text-purple-200 border-purple-700/50',
-            btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold',
+            btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900',
             inputBg: 'bg-purple-900/60 text-white placeholder-purple-400 border-purple-700 focus:ring-amber-400',
             accentText: 'text-amber-300'
           };
         case 'emerald':
           return {
-            cardBg: 'bg-emerald-950/90 text-emerald-100 border-emerald-800/60 shadow-lg',
-            headerText: 'text-emerald-100 font-bold',
+            cardBg: 'bg-emerald-950/80',
+            headerText: 'text-emerald-100',
             subText: 'text-emerald-300',
-            badgeBg: 'bg-emerald-900/80 text-emerald-200 border-emerald-700',
+            badgeBg: 'bg-emerald-900/60 text-emerald-200 border-emerald-700',
             progressBg: 'bg-emerald-950',
             progressBar: 'bg-emerald-400',
             spendText: 'text-emerald-200',
             rewardBg: 'bg-emerald-900/40 text-emerald-200 border-emerald-700/50',
-            btnBg: 'bg-emerald-500 hover:bg-emerald-400 text-white font-semibold',
+            btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white',
             inputBg: 'bg-emerald-900/60 text-white placeholder-emerald-400 border-emerald-700 focus:ring-emerald-400',
             accentText: 'text-emerald-300'
           };
         case 'blue':
         default:
           return {
-            cardBg: 'bg-blue-950/90 text-blue-100 border-blue-800/60 shadow-lg',
-            headerText: 'text-blue-100 font-bold',
+            cardBg: 'bg-blue-950/80',
+            headerText: 'text-blue-100',
             subText: 'text-blue-300',
-            badgeBg: 'bg-blue-900/80 text-blue-200 border-blue-700',
+            badgeBg: 'bg-blue-900/60 text-blue-200 border-blue-700',
             progressBg: 'bg-blue-950',
             progressBar: 'bg-orange-400',
             spendText: 'text-blue-200',
             rewardBg: 'bg-blue-900/40 text-blue-200 border-blue-700/50',
-            btnBg: 'bg-orange-500 hover:bg-orange-600 text-white font-semibold',
+            btnBg: 'bg-orange-500 hover:bg-orange-600 text-white',
             inputBg: 'bg-blue-900/60 text-white placeholder-blue-400 border-blue-700 focus:ring-orange-400',
             accentText: 'text-orange-300'
           };
