@@ -32,19 +32,19 @@
         <h1 class="text-2xl font-extrabold text-white flex items-center gap-2 tracking-tight">
           💳 Quản Lý Thẻ Tín Dụng Pro
         </h1>
-        <p class="text-xs text-slate-400 mt-1">Tự động chốt sao kê, quản lý mốc tối thiểu & ghim ưu tiên</p>
+        <p class="text-xs text-slate-400 mt-1">Theo dõi chi tiêu, đếm ngược sao kê & tích thưởng chuyên nghiệp</p>
       </div>
       <div class="flex flex-wrap gap-2 w-full md:w-auto">
-        <button onclick="openStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700 transition">
+        <button onclick="openStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3.5 py-2 rounded-lg text-xs border border-slate-700 transition">
           📊 Thống Kê
         </button>
-        <button onclick="openCategoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700 transition">
+        <button onclick="openCategoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3.5 py-2 rounded-lg text-xs border border-slate-700 transition">
           🛒 Sàn / Kênh Quẹt
         </button>
-        <button onclick="openMonthlyHistory()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700 transition">
+        <button onclick="openMonthlyHistory()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3.5 py-2 rounded-lg text-xs border border-slate-700 transition">
           📜 Lịch Sử Tháng
         </button>
-        <button onclick="exportBackupData()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-3 py-2 rounded-lg text-xs shadow transition">
+        <button onclick="exportBackupData()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-3.5 py-2 rounded-lg text-xs shadow transition">
           📥 Xuất Backup
         </button>
         <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow transition">
@@ -53,7 +53,7 @@
       </div>
     </header>
 
-    <!-- Bố cục: Thẻ (3 Cột) | Quy Tắc & Ghi Chú (1 Cột) -->
+    <!-- Bố cục: Danh Sách Thẻ (3 Cột) | Quy Tắc & Ghi Chú (1 Cột) -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
       
       <!-- Cột Trái: Danh sách Thẻ Tín Dụng (2 thẻ / 1 hàng) -->
@@ -63,8 +63,10 @@
         </div>
       </div>
 
-      <!-- Cột Phải: Quy Tắc & Ghi Chú -->
+      <!-- Cột Phải: Quy Tắc & Ghi Chú (Chuẩn kích thước cũ) -->
       <div class="lg:col-span-1 flex flex-col gap-4">
+        
+        <!-- Mục Quy Tắc -->
         <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 shadow-md">
           <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>📌 Quy Tắc Dùng Thẻ</span>
@@ -73,6 +75,7 @@
           <textarea id="rules-textarea" placeholder="- Gói CAKE lên Premium...&#10;- VIB MAX: MAX CAP 1500k...&#10;- Thẻ VIB: Ưu tiên Ẩm thực..." class="w-full h-[225px] bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed font-normal"></textarea>
         </div>
 
+        <!-- Mục Ghi Chú Nhanh -->
         <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 shadow-md">
           <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>📝 Ghi Chú Nhanh</span>
@@ -80,6 +83,7 @@
           </h2>
           <textarea id="notes-textarea" placeholder="- Check hoàn 5tr7 của thẻ VIB...&#10;- 14/09/2026: Chèn thẻ VIB MAX...&#10;- Nhắc nộp tiền sao kê..." class="w-full h-[225px] bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed font-normal"></textarea>
         </div>
+
       </div>
 
     </div>
@@ -150,7 +154,7 @@
     </div>
   </div>
 
-  <!-- Modal Thống Kê Tổng Hợp -->
+  <!-- Modal Thống Kê -->
   <div id="modal-stats" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
     <div class="bg-slate-800 rounded-xl p-6 max-w-2xl w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
@@ -245,7 +249,7 @@
       return `${m}/${y}`;
     }
 
-    // TƯ TỰ ĐỘNG CHỐT THÁNG KHI QUA NGÀY SAO KÊ
+    // TỰ ĐỘNG CHỐT THÁNG KHI QUA NGÀY SAO KÊ
     async function autoCheckAndCloseBillingCycles(docs) {
       const today = new Date();
       const currentDay = today.getDate();
@@ -311,22 +315,13 @@
 
       let cardList = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
 
-      // SẮP XẾP THỨ TỰ THÔNG MINH
+      // SẮP XẾP THỨ TỰ (ĐÃ BỎ CHỨC NĂNG ĐẨY THẺ 100% XUỐNG DƯỚI)
       cardList.sort((a, b) => {
+        // 1. Thẻ Ghim ưu tiên xếp lên trên cùng
         if (a.isPinned && !b.isPinned) return -1;
         if (!a.isPinned && b.isPinned) return 1;
 
-        const aSpent = Number(a.currentSpending) || 0;
-        const aTarget = Number(a.target) || 1;
-        const bSpent = Number(b.currentSpending) || 0;
-        const bTarget = Number(b.target) || 1;
-
-        const aIsDone = aSpent >= aTarget;
-        const bIsDone = bSpent >= bTarget;
-
-        if (aIsDone && !bIsDone) return 1;
-        if (!aIsDone && bIsDone) return -1;
-
+        // 2. Các thẻ còn lại xếp theo số ngày sao kê còn ít nhất
         const aDays = getDaysUntilStatement(a.statementDay).daysLeft;
         const bDays = getDaysUntilStatement(b.statementDay).daysLeft;
         return aDays - bDays;
