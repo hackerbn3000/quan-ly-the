@@ -245,7 +245,7 @@
       return `${m}/${y}`;
     }
 
-    // TÍNH NĂNG 1: TỰ ĐỘNG CHỐT THÁNG KHI QUA NGÀY SAO KÊ
+    // TƯ TỰ ĐỘNG CHỐT THÁNG KHI QUA NGÀY SAO KÊ
     async function autoCheckAndCloseBillingCycles(docs) {
       const today = new Date();
       const currentDay = today.getDate();
@@ -263,7 +263,6 @@
         const realCurrentMonth = today.getMonth() + 1;
         const realCurrentYear = today.getFullYear();
 
-        // Kiểm tra nếu kỳ của thẻ cũ hơn thực tế HOẶC đã qua ngày sao kê của tháng này
         let shouldAutoClose = false;
 
         if (cardCycleYear < realCurrentYear || (cardCycleYear === realCurrentYear && cardCycleMonth < realCurrentMonth)) {
@@ -278,7 +277,6 @@
           if (nextM > 12) { nextM = 1; nextY++; }
           const nextCycleStr = `${String(nextM).padStart(2, '0')}/${nextY}`;
 
-          // Lưu tự động vào archive
           await addDoc(collection(db, "monthly_archive"), {
             cardName: data.name,
             month: `Tháng ${currentCycle}`,
@@ -290,7 +288,6 @@
             history: data.history || []
           });
 
-          // Reset thẻ về 0đ và nhảy kỳ mới
           await updateDoc(doc(db, "cards", id), {
             currentSpending: 0,
             currentCycle: nextCycleStr,
@@ -314,9 +311,8 @@
 
       let cardList = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
 
-      // TÍNH NĂNG 2 & 3: SẮP XẾP THỨ TỰ THÔNG MINH
+      // SẮP XẾP THỨ TỰ THÔNG MINH
       cardList.sort((a, b) => {
-        // 1. Thẻ Ghim luôn ở trên cùng
         if (a.isPinned && !b.isPinned) return -1;
         if (!a.isPinned && b.isPinned) return 1;
 
@@ -328,11 +324,9 @@
         const aIsDone = aSpent >= aTarget;
         const bIsDone = bSpent >= bTarget;
 
-        // 2. Thẻ đã đủ 100% tự động đẩy xuống dưới cùng
         if (aIsDone && !bIsDone) return 1;
         if (!aIsDone && bIsDone) return -1;
 
-        // 3. Thẻ nào còn ít ngày sao kê nhất ưu tiên xếp lên trước
         const aDays = getDaysUntilStatement(a.statementDay).daysLeft;
         const bDays = getDaysUntilStatement(b.statementDay).daysLeft;
         return aDays - bDays;
@@ -360,7 +354,6 @@
           ? `<span class="bg-amber-500 text-slate-900 font-semibold text-[11px] px-2 py-0.5 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày</span>`
           : `<span class="${theme.badgeBg} text-[11px] px-2 py-0.5 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
 
-        // TÍNH NĂNG 4: Nhãn mốc tối thiểu tiêu để hoàn
         let minTargetBadge = "";
         if (minTarget > 0) {
           if (current >= minTarget) {
@@ -370,7 +363,6 @@
           }
         }
 
-        // TÍNH NĂNG 6: Dropdown danh sách kênh quẹt
         const categoryOptions = activeCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
 
         container.innerHTML += `
@@ -421,7 +413,7 @@
               </div>
             </div>
 
-            <!-- Cập nhật chi tiêu có chọn Sàn/Kênh quẹt -->
+            <!-- Cập nhật chi tiêu -->
             <div class="mt-4 pt-3 border-t border-white/10 space-y-2">
               <div class="grid grid-cols-12 gap-2">
                 <input type="number" id="spend-input-${id}" placeholder="+ Số tiền" class="${theme.inputBg} rounded-lg p-2 text-xs font-num col-span-4 outline-none border focus:ring-1">
@@ -443,12 +435,10 @@
       });
     });
 
-    // TÍNH NĂNG 3: Bật/Tắt Ghim Thẻ
     window.togglePinCard = async (id, isPinned) => {
       await updateDoc(doc(db, "cards", id), { isPinned });
     };
 
-    // Cập nhật chi tiêu kèm lưu Sàn / Kênh quẹt
     window.addSpending = async (id, currentVal) => {
       const input = document.getElementById(`spend-input-${id}`);
       const catInput = document.getElementById(`spend-cat-${id}`);
@@ -480,7 +470,6 @@
       }
     };
 
-    // TÍNH NĂNG 6: Quản lý Danh mục Kênh / Sàn Quẹt
     window.openCategoryModal = () => openModal('modal-categories');
 
     function renderCategoriesModalList() {
@@ -511,7 +500,6 @@
       }
     };
 
-    // TÍNH NĂNG 5: THỐNG KÊ THEO NĂM CỦA TỪNG LOẠI THẺ
     window.openStatsModal = async () => {
       const snapshot = await getDocs(collection(db, "monthly_archive"));
       const container = document.getElementById("stats-content");
@@ -525,8 +513,8 @@
       const records = snapshot.docs.map(d => d.data());
       
       const yearTotalStats = {};
-      const cardYearStats = {}; // { '2026': { 'VIB Super Card': 50000000, 'TPBank': 30000000 } }
-      const monthCategoryStats = {}; // { 'Tháng 09/2026': { 'Shopee': 1000000, 'TikTok Shop': 500000 } }
+      const cardYearStats = {};
+      const monthCategoryStats = {};
 
       records.forEach(r => {
         const year = r.cycleYear || 'Khác';
@@ -534,14 +522,11 @@
         const spent = r.totalSpent || 0;
         const monthKey = r.month || 'Khác';
 
-        // Cộng tổng chi theo năm
         yearTotalStats[year] = (yearTotalStats[year] || 0) + spent;
 
-        // Cộng tổng chi của từng loại thẻ theo năm
         if (!cardYearStats[year]) cardYearStats[year] = {};
         cardYearStats[year][cardName] = (cardYearStats[year][cardName] || 0) + spent;
 
-        // Thống kê theo kênh quẹt trong lịch sử giao dịch
         if (r.history && Array.isArray(r.history)) {
           if (!monthCategoryStats[monthKey]) monthCategoryStats[monthKey] = {};
           r.history.forEach(item => {
@@ -553,7 +538,6 @@
 
       let html = `<div class="space-y-4">`;
 
-      // 1. Thống kê từng loại thẻ theo Năm
       for (const [yr, cardMap] of Object.entries(cardYearStats)) {
         html += `
           <div class="bg-slate-900 border border-slate-700/80 p-3.5 rounded-lg space-y-2">
@@ -570,7 +554,6 @@
         html += `</div></div>`;
       }
 
-      // 2. Thống kê theo Sàn/Kênh quẹt hàng tháng
       html += `
         <div class="bg-slate-900 border border-slate-700/80 p-3.5 rounded-lg space-y-2">
           <h3 class="font-bold text-indigo-400 text-sm">🛒 Thống Kê Theo Kênh / Sàn Quẹt Các Tháng</h3>
@@ -589,7 +572,6 @@
       openModal('modal-stats');
     };
 
-    // Form Thêm/Sửa Thẻ
     document.getElementById("card-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const id = document.getElementById("card-id").value.trim();
@@ -620,7 +602,6 @@
       closeModal('modal-add');
     });
 
-    // Chốt sổ thủ công
     window.closeMonthManual = async (id, name, current, target, currentCycle) => {
       const confirmMsg = `Thủ công chốt sổ thẻ ${name} cho kỳ [${currentCycle}] với tổng chi: ${current.toLocaleString('vi-VN')} đ?\nThẻ sẽ tự động nhảy sang chu kỳ tháng tiếp theo!`;
       if (!confirm(confirmMsg)) return;
@@ -655,7 +636,6 @@
       alert(`Đã chốt sổ kỳ ${currentCycle}! Kỳ tiếp theo của thẻ ${name} hiện tại là: ${nextCycle}`);
     };
 
-    // Xuất file Backup JSON
     window.exportBackupData = async () => {
       const cardsSnap = await getDocs(cardsCollection);
       const cardsData = cardsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -678,7 +658,6 @@
       downloadAnchor.remove();
     };
 
-    // Lịch sử giao dịch & Xóa
     window.viewHistory = async (id, cardName) => {
       document.getElementById("history-modal-title").innerText = `Lịch Sử Giao Dịch: ${cardName}`;
       const cardSnap = await getDoc(doc(db, "cards", id));
@@ -749,7 +728,6 @@
       });
     };
 
-    // Theme ngân hàng
     function getBankThemeCustom(cardName = '', customColor = '') {
       const name = cardName.toUpperCase();
       let colorType = customColor;
