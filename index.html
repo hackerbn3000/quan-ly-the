@@ -6,6 +6,16 @@
   <title>Quản Lý Thẻ Tín Dụng Pro</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-num { font-family: 'JetBrains Mono', monospace; }
+  </style>
+
   <!-- Cấu hình PWA -->
   <meta name="theme-color" content="#0f172a">
   <meta name="mobile-web-app-capable" content="yes">
@@ -19,29 +29,32 @@
     <!-- Header -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b border-slate-800">
       <div>
-        <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 class="text-2xl font-extrabold text-white flex items-center gap-2 tracking-tight">
           💳 Quản Lý Thẻ Tín Dụng Pro
         </h1>
-        <p class="text-xs text-slate-400 mt-1">Theo dõi chi tiêu, đếm ngược sao kê & tích thưởng chuyên nghiệp</p>
+        <p class="text-xs text-slate-400 mt-1">Tự động chốt sao kê, quản lý mốc tối thiểu & ghim ưu tiên</p>
       </div>
       <div class="flex flex-wrap gap-2 w-full md:w-auto">
-        <button onclick="openStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700">
+        <button onclick="openStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700 transition">
           📊 Thống Kê
         </button>
-        <button onclick="openMonthlyHistory()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700">
+        <button onclick="openCategoryModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700 transition">
+          🛒 Sàn / Kênh Quẹt
+        </button>
+        <button onclick="openMonthlyHistory()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium px-3 py-2 rounded-lg text-xs border border-slate-700 transition">
           📜 Lịch Sử Tháng
         </button>
-        <button onclick="exportBackupData()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-3 py-2 rounded-lg text-xs shadow">
+        <button onclick="exportBackupData()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-medium px-3 py-2 rounded-lg text-xs shadow transition">
           📥 Xuất Backup
         </button>
-        <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow">
+        <button onclick="openAddModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2 rounded-lg text-xs shadow transition">
           + Thêm Thẻ Mới
         </button>
       </div>
     </header>
 
-    <!-- Bố cục: Danh Sách Thẻ (Trái - 3/4) | Quy Tắc & Ghi Chú (Phải - 1/4) -->
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
+    <!-- Bố cục: Thẻ (3 Cột) | Quy Tắc & Ghi Chú (1 Cột) -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
       
       <!-- Cột Trái: Danh sách Thẻ Tín Dụng (2 thẻ / 1 hàng) -->
       <div class="lg:col-span-3">
@@ -50,27 +63,23 @@
         </div>
       </div>
 
-      <!-- Cột Phải: Gom Quy Tắc & Ghi Chú (Chiều dài bằng 2 thẻ xếp dọc) -->
-      <div class="lg:col-span-1 flex flex-col gap-5 h-full">
-        
-        <!-- Mục Quy Tắc -->
-        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 flex-1 flex flex-col">
-          <h2 class="text-sm font-bold text-indigo-400 mb-2 flex items-center justify-between shrink-0">
+      <!-- Cột Phải: Quy Tắc & Ghi Chú -->
+      <div class="lg:col-span-1 flex flex-col gap-4">
+        <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 shadow-md">
+          <h2 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>📌 Quy Tắc Dùng Thẻ</span>
-            <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 hover:bg-indigo-600/50">Lưu</button>
+            <button onclick="saveRules()" class="text-[10px] bg-indigo-600/30 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/40 hover:bg-indigo-600/60 transition">Lưu</button>
           </h2>
-          <textarea id="rules-textarea" placeholder="- Thẻ VIB: Quẹt Ẩm thực/Khách sạn...&#10;- Thẻ VPBank: Tiêu mốc 3.3tr max xu...&#10;- Kiểm tra MCC trước khi thanh toán." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed flex-1 min-h-[160px]"></textarea>
+          <textarea id="rules-textarea" placeholder="- Gói CAKE lên Premium...&#10;- VIB MAX: MAX CAP 1500k...&#10;- Thẻ VIB: Ưu tiên Ẩm thực..." class="w-full h-[225px] bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-indigo-500 resize-none leading-relaxed font-normal"></textarea>
         </div>
 
-        <!-- Mục Ghi Chú Nhanh -->
-        <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/60 flex-1 flex flex-col">
-          <h2 class="text-sm font-bold text-amber-400 mb-2 flex items-center justify-between shrink-0">
+        <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/80 shadow-md">
+          <h2 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2 flex items-center justify-between">
             <span>📝 Ghi Chú Nhanh</span>
-            <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 hover:bg-amber-600/50">Lưu</button>
+            <button onclick="saveNotes()" class="text-[10px] bg-amber-600/30 text-amber-300 px-2 py-0.5 rounded border border-amber-500/40 hover:bg-amber-600/60 transition">Lưu</button>
           </h2>
-          <textarea id="notes-textarea" placeholder="- Cần thanh toán trả góp ngày 15...&#10;- Kiểm tra cashback TPBank...&#10;- Mã giảm giá mua sắm..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg p-2 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed flex-1 min-h-[160px]"></textarea>
+          <textarea id="notes-textarea" placeholder="- Check hoàn 5tr7 của thẻ VIB...&#10;- 14/09/2026: Chèn thẻ VIB MAX...&#10;- Nhắc nộp tiền sao kê..." class="w-full h-[225px] bg-slate-900 border border-slate-700/80 rounded-lg p-2.5 text-xs text-slate-200 outline-none focus:border-amber-500 resize-none leading-relaxed font-normal"></textarea>
         </div>
-
       </div>
 
     </div>
@@ -84,29 +93,35 @@
         <input type="hidden" id="card-id" value="">
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Tên Thẻ / Ngân Hàng</label>
-          <input type="text" id="card-name" placeholder="VD: VIB Super Card - 6700" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          <input type="text" id="card-name" placeholder="VD: VIB SUPER CARD - 6700" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Mốc Chi Tiêu (VNĐ)</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mốc Chi Tiêu Toàn Bộ (VNĐ)</label>
             <input type="number" id="card-target" placeholder="10000000" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mốc Tối Thiểu Để Hoàn (VNĐ)</label>
+            <input type="number" id="card-min-target" placeholder="2000000 (Để 0 nếu không yêu cầu)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Ngày Sao Kê (1-31)</label>
             <input type="number" id="card-statement" min="1" max="31" placeholder="20" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Tông Màu Thẻ</label>
-          <select id="card-color" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
-            <option value="white_amex">⚪ Trắng Silver AMEX (VIB Super Card)</option>
-            <option value="avocado">🥑 Xanh Bơ Avocado (VIB Max Card)</option>
-            <option value="black">🖤 Đen VIP (Black Titanium / Metal)</option>
-            <option value="blue">💙 Xanh Dương (VIB Standard)</option>
-            <option value="purple">💜 Tím (TPBank / VPBank EVO)</option>
-            <option value="emerald">💚 Xanh Lá (VPBank S Reward)</option>
-            <option value="slate">🩶 Xám Neutral (Mặc định)</option>
-          </select>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Tông Màu Thẻ</label>
+            <select id="card-color" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+              <option value="white_amex">⚪ Trắng Silver AMEX (VIB Super Card)</option>
+              <option value="avocado">🥑 Xanh Bơ Avocado Toàn Thẻ (VIB Max Card)</option>
+              <option value="black">🖤 Đen VIP Titanium (Black Platinum)</option>
+              <option value="blue">💙 Xanh Dương (VIB Standard)</option>
+              <option value="purple">💜 Tím (TPBank / VPBank EVO)</option>
+              <option value="emerald">💚 Xanh Lá (VPBank S Reward)</option>
+              <option value="slate">🩶 Xám Neutral (Mặc định)</option>
+            </select>
+          </div>
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Ghi Chú Hoàn Thưởng</label>
@@ -120,11 +135,26 @@
     </div>
   </div>
 
-  <!-- Modal Thống Kê -->
-  <div id="modal-stats" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-    <div class="bg-slate-800 rounded-xl p-6 max-w-xl w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[85vh] flex flex-col">
+  <!-- Modal Quản Lý Sàn / Kênh Quẹt -->
+  <div id="modal-categories" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div class="bg-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl border border-slate-700 text-slate-100">
       <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-        <h2 class="text-lg font-bold">📊 Thống Kê Chi Tiêu Tổng Hợp</h2>
+        <h2 class="text-lg font-bold">🛒 Quản Lý Kênh / Sàn Quẹt Thẻ</h2>
+        <button onclick="closeModal('modal-categories')" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+      </div>
+      <div class="flex gap-2 mb-4">
+        <input type="text" id="new-cat-input" placeholder="Tên sàn/kênh (VD: TikTok Shop, Shopee...)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white outline-none">
+        <button onclick="addCategory()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs shrink-0">+ Thêm</button>
+      </div>
+      <div id="category-list" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Modal Thống Kê Tổng Hợp -->
+  <div id="modal-stats" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div class="bg-slate-800 rounded-xl p-6 max-w-2xl w-full shadow-2xl border border-slate-700 text-slate-100 max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+        <h2 class="text-lg font-bold">📊 Thống Kê Chi Tiêu Chi Tiết</h2>
         <button onclick="closeModal('modal-stats')" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
       </div>
       <div id="stats-content" class="space-y-4 overflow-y-auto pr-1 flex-1 text-xs"></div>
@@ -158,7 +188,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc, getDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // CẤU HÌNH FIREBASE THỰC TẾ CỦA BẠN
+    // CẤU HÌNH FIREBASE THỰC TẾ
     const firebaseConfig = {
       apiKey: "AIzaSyCmtLvK0_CZ7EA_zbUjs01lqxN6ifO87Ok",
       authDomain: "quan-ly-the-tin-dung.firebaseapp.com",
@@ -172,8 +202,21 @@
     const db = getFirestore(app);
     const cardsCollection = collection(db, "cards");
     const metaDocRef = doc(db, "app_data", "user_notes");
+    const categoriesDocRef = doc(db, "app_data", "categories");
 
-    // Lắng nghe Quy tắc & Ghi chú cá nhân
+    let activeCategories = ["Shopee", "TikTok Shop", "Siêu Thị", "Ăn Uống", "Điện Máy", "Khác"];
+
+    // Lắng nghe danh mục Kênh quẹt
+    onSnapshot(categoriesDocRef, (snap) => {
+      if (snap.exists() && snap.data().list) {
+        activeCategories = snap.data().list;
+      } else {
+        setDoc(categoriesDocRef, { list: activeCategories });
+      }
+      renderCategoriesModalList();
+    });
+
+    // Lắng nghe Quy tắc & Ghi chú
     onSnapshot(metaDocRef, (snap) => {
       if (snap.exists()) {
         const d = snap.data();
@@ -202,19 +245,105 @@
       return `${m}/${y}`;
     }
 
+    // TÍNH NĂNG 1: TỰ ĐỘNG CHỐT THÁNG KHI QUA NGÀY SAO KÊ
+    async function autoCheckAndCloseBillingCycles(docs) {
+      const today = new Date();
+      const currentDay = today.getDate();
+
+      for (let docSnap of docs) {
+        const data = docSnap.data();
+        const id = docSnap.id;
+        const statementDay = data.statementDay;
+        const currentCycle = data.currentCycle || getCurrentCycleString();
+        
+        const [mStr, yStr] = currentCycle.split('/');
+        const cardCycleMonth = parseInt(mStr);
+        const cardCycleYear = parseInt(yStr);
+
+        const realCurrentMonth = today.getMonth() + 1;
+        const realCurrentYear = today.getFullYear();
+
+        // Kiểm tra nếu kỳ của thẻ cũ hơn thực tế HOẶC đã qua ngày sao kê của tháng này
+        let shouldAutoClose = false;
+
+        if (cardCycleYear < realCurrentYear || (cardCycleYear === realCurrentYear && cardCycleMonth < realCurrentMonth)) {
+          shouldAutoClose = true;
+        } else if (cardCycleYear === realCurrentYear && cardCycleMonth === realCurrentMonth && currentDay > statementDay) {
+          shouldAutoClose = true;
+        }
+
+        if (shouldAutoClose) {
+          let nextM = cardCycleMonth + 1;
+          let nextY = cardCycleYear;
+          if (nextM > 12) { nextM = 1; nextY++; }
+          const nextCycleStr = `${String(nextM).padStart(2, '0')}/${nextY}`;
+
+          // Lưu tự động vào archive
+          await addDoc(collection(db, "monthly_archive"), {
+            cardName: data.name,
+            month: `Tháng ${currentCycle}`,
+            cycleMonth: String(cardCycleMonth).padStart(2, '0'),
+            cycleYear: cardCycleYear,
+            totalSpent: data.currentSpending || 0,
+            target: data.target || 0,
+            closedAt: new Date().toLocaleString('vi-VN') + " (Tự động chốt sao kê)",
+            history: data.history || []
+          });
+
+          // Reset thẻ về 0đ và nhảy kỳ mới
+          await updateDoc(doc(db, "cards", id), {
+            currentSpending: 0,
+            currentCycle: nextCycleStr,
+            history: []
+          });
+        }
+      }
+    }
+
     // Lắng nghe dữ liệu Thẻ Realtime
-    onSnapshot(cardsCollection, (snapshot) => {
+    onSnapshot(cardsCollection, async (snapshot) => {
+      if (!snapshot.empty) {
+        await autoCheckAndCloseBillingCycles(snapshot.docs);
+      }
+
       const container = document.getElementById("cards-container");
       if (snapshot.empty) {
         container.innerHTML = `<div class="col-span-2 text-center py-12 bg-slate-800/50 rounded-xl border border-slate-700 text-slate-400">Chưa có thẻ nào. Nhấn "+ Thêm Thẻ Mới" để tạo thẻ đầu tiên!</div>`;
         return;
       }
+
+      let cardList = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+
+      // TÍNH NĂNG 2 & 3: SẮP XẾP THỨ TỰ THÔNG MINH
+      cardList.sort((a, b) => {
+        // 1. Thẻ Ghim luôn ở trên cùng
+        if (a.isPinned && !b.isPinned) return -1;
+        if (!a.isPinned && b.isPinned) return 1;
+
+        const aSpent = Number(a.currentSpending) || 0;
+        const aTarget = Number(a.target) || 1;
+        const bSpent = Number(b.currentSpending) || 0;
+        const bTarget = Number(b.target) || 1;
+
+        const aIsDone = aSpent >= aTarget;
+        const bIsDone = bSpent >= bTarget;
+
+        // 2. Thẻ đã đủ 100% tự động đẩy xuống dưới cùng
+        if (aIsDone && !bIsDone) return 1;
+        if (!aIsDone && bIsDone) return -1;
+
+        // 3. Thẻ nào còn ít ngày sao kê nhất ưu tiên xếp lên trước
+        const aDays = getDaysUntilStatement(a.statementDay).daysLeft;
+        const bDays = getDaysUntilStatement(b.statementDay).daysLeft;
+        return aDays - bDays;
+      });
+
       container.innerHTML = "";
-      snapshot.docs.forEach(docSnap => {
-        const data = docSnap.data();
-        const id = docSnap.id;
+      cardList.forEach(data => {
+        const id = data.id;
         const current = Number(data.currentSpending) || 0;
         const target = Number(data.target) || 1;
+        const minTarget = Number(data.minTarget) || 0;
         const currentCycle = data.currentCycle || getCurrentCycleString();
 
         const rawPercent = (current / target) * 100;
@@ -226,19 +355,35 @@
         const rewardEstimate = calculateRewardEstimate(data.name, current, target);
 
         let countdownBadge = statementInfo.isToday 
-          ? `<span class="bg-rose-500 text-white font-semibold text-xs px-2 py-0.5 rounded-full animate-pulse shadow">Hôm nay sao kê!</span>`
+          ? `<span class="bg-rose-500 text-white font-semibold text-[11px] px-2 py-0.5 rounded-full animate-pulse shadow">Hôm nay sao kê!</span>`
           : statementInfo.daysLeft <= 3
-          ? `<span class="bg-amber-500 text-slate-900 font-semibold text-xs px-2 py-0.5 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày</span>`
-          : `<span class="${theme.badgeBg} text-xs px-2 py-0.5 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
+          ? `<span class="bg-amber-500 text-slate-900 font-semibold text-[11px] px-2 py-0.5 rounded-full shadow">Còn ${statementInfo.daysLeft} ngày</span>`
+          : `<span class="${theme.badgeBg} text-[11px] px-2 py-0.5 rounded-full border">Còn ${statementInfo.daysLeft} ngày</span>`;
+
+        // TÍNH NĂNG 4: Nhãn mốc tối thiểu tiêu để hoàn
+        let minTargetBadge = "";
+        if (minTarget > 0) {
+          if (current >= minTarget) {
+            minTargetBadge = `<span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">✔ Đã đạt mốc tối thiểu (${(minTarget/1000000).toFixed(1)}tr)</span>`;
+          } else {
+            minTargetBadge = `<span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">⚠️ Cần tiêu thêm ${(minTarget - current).toLocaleString('vi-VN')} đ để đạt mốc hoàn tối thiểu</span>`;
+          }
+        }
+
+        // TÍNH NĂNG 6: Dropdown danh sách kênh quẹt
+        const categoryOptions = activeCategories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
 
         container.innerHTML += `
-          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-4 sm:p-5 flex flex-col justify-between transition-all duration-300">
+          <div class="${theme.cardBg} rounded-xl shadow-xl border border-white/10 p-5 flex flex-col justify-between transition-all duration-300 min-h-[310px] ${data.isPinned ? 'ring-2 ring-amber-400' : ''}">
             <div>
-              <div class="flex justify-between items-start mb-3">
+              <div class="flex justify-between items-start mb-2">
                 <div>
                   <div class="flex items-center gap-2">
-                    <h3 class="font-bold text-lg ${theme.headerText}">${data.name}</h3>
-                    <span class="text-[10px] bg-black/20 text-slate-300 px-2 py-0.5 rounded border border-white/10">Kỳ: ${currentCycle}</span>
+                    <button onclick="togglePinCard('${id}', ${!data.isPinned})" title="Ghim thẻ lên trên" class="text-sm ${data.isPinned ? 'text-amber-400' : 'text-slate-400 hover:text-white'}">
+                      📌
+                    </button>
+                    <h3 class="font-bold text-base tracking-tight ${theme.headerText}">${data.name}</h3>
+                    <span class="text-[10px] ${theme.badgeBg} font-mono px-2 py-0.5 rounded border">Kỳ: ${currentCycle}</span>
                   </div>
                   <div class="flex items-center gap-2 mt-1">
                     <span class="text-xs ${theme.subText}">Sao kê: Ngày ${data.statementDay === 31 ? 'cuối tháng' : data.statementDay}</span>
@@ -246,43 +391,49 @@
                   </div>
                 </div>
                 <div class="space-x-1 shrink-0">
-                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}', '${data.customColor || ''}')" class="text-xs text-slate-300 hover:text-white px-2 py-1 rounded hover:bg-black/20">Sửa</button>
-                  <button onclick="deleteCard('${id}')" class="text-xs text-rose-300 hover:text-rose-100 px-2 py-1 rounded hover:bg-rose-500/20">Xóa</button>
+                  <button onclick="editCard('${id}', '${data.name}', ${data.target}, ${data.statementDay}, '${data.rewardNote || ''}', '${data.customColor || ''}', ${minTarget})" class="text-xs font-medium ${theme.subText} hover:opacity-100 px-2 py-1 rounded bg-black/10 hover:bg-black/20">Sửa</button>
+                  <button onclick="deleteCard('${id}')" class="text-xs font-medium text-rose-400 hover:text-rose-300 px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20">Xóa</button>
                 </div>
               </div>
 
-              <!-- Tiến trình -->
+              <!-- Tiến trình chi tiêu -->
               <div class="mt-3">
                 <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span class="${theme.spendText}">Đã quẹt: ${current.toLocaleString('vi-VN')} đ</span>
-                  <span class="${displayPercent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${displayPercent}%</span>
+                  <span class="${theme.spendText}">Đã quẹt: <strong class="font-num text-sm">${current.toLocaleString('vi-VN')} đ</strong></span>
+                  <span class="font-num text-sm ${displayPercent >= 100 ? 'text-emerald-400 font-bold' : theme.accentText}">${displayPercent}%</span>
                 </div>
                 <div class="w-full ${theme.progressBg} rounded-full h-3 p-0.5 border border-white/10">
-                  <div class="${displayPercent >= 100 ? 'bg-emerald-400' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
+                  <div class="${displayPercent >= 100 ? 'bg-emerald-400 shadow-sm shadow-emerald-400/50' : theme.progressBar} h-2 rounded-full transition-all duration-500" style="width: ${barWidth}%"></div>
                 </div>
-                <p class="text-xs ${theme.subText} mt-1 text-right">Mốc: ${target.toLocaleString('vi-VN')} đ</p>
+                <div class="flex justify-between items-center mt-1">
+                  <div>${minTargetBadge}</div>
+                  <p class="text-xs ${theme.subText} text-right">Mốc: <span class="font-num">${target.toLocaleString('vi-VN')} đ</span></p>
+                </div>
               </div>
 
               <!-- Thưởng & Ghi chú -->
-              <div class="mt-3 space-y-2">
+              <div class="mt-3 space-y-1.5">
                 <div class="p-2.5 ${theme.rewardBg} rounded-lg text-xs border backdrop-blur-sm flex justify-between items-center">
                   <span>🎯 Hoàn thưởng:</span>
-                  <span class="font-bold ${theme.accentText}">${rewardEstimate}</span>
+                  <span class="font-bold font-num ${theme.accentText}">${rewardEstimate}</span>
                 </div>
-                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs text-slate-200 italic">💡 ${data.rewardNote}</div>` : ''}
+                ${data.rewardNote ? `<div class="p-2 bg-black/20 rounded text-xs ${theme.spendText} italic">💡 ${data.rewardNote}</div>` : ''}
               </div>
             </div>
 
-            <!-- Cập nhật chi tiêu & Chốt tháng -->
+            <!-- Cập nhật chi tiêu có chọn Sàn/Kênh quẹt -->
             <div class="mt-4 pt-3 border-t border-white/10 space-y-2">
-              <div class="flex gap-2">
-                <input type="number" id="spend-input-${id}" placeholder="+ Tiền quẹt" class="${theme.inputBg} rounded-lg p-2 text-xs w-2/3 outline-none border focus:ring-1">
-                <input type="text" id="spend-note-${id}" placeholder="Ghi chú" class="${theme.inputBg} rounded-lg p-2 text-xs w-1/3 outline-none border focus:ring-1">
+              <div class="grid grid-cols-12 gap-2">
+                <input type="number" id="spend-input-${id}" placeholder="+ Số tiền" class="${theme.inputBg} rounded-lg p-2 text-xs font-num col-span-4 outline-none border focus:ring-1">
+                <select id="spend-cat-${id}" class="${theme.inputBg} rounded-lg p-2 text-xs col-span-4 outline-none border focus:ring-1">
+                  ${categoryOptions}
+                </select>
+                <input type="text" id="spend-note-${id}" placeholder="Ghi chú thêm" class="${theme.inputBg} rounded-lg p-2 text-xs col-span-4 outline-none border focus:ring-1">
               </div>
               <div class="flex justify-between items-center gap-2 pt-1">
                 <div class="flex gap-1">
-                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs text-slate-200 hover:text-white bg-black/20 hover:bg-black/30 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
-                  <button onclick="closeMonthAuto('${id}', '${data.name}', ${current}, ${target}, '${currentCycle}')" class="text-xs text-amber-300 hover:text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1.5 rounded-lg border border-amber-500/30">🔒 Chốt tháng</button>
+                  <button onclick="viewHistory('${id}', '${data.name}')" class="text-xs ${theme.subText} hover:opacity-100 bg-black/10 hover:bg-black/20 px-2.5 py-1.5 rounded-lg border border-white/10">📜 Lịch sử</button>
+                  <button onclick="closeMonthManual('${id}', '${data.name}', ${current}, ${target}, '${currentCycle}')" class="text-xs text-amber-300 hover:text-amber-200 bg-amber-500/20 hover:bg-amber-500/30 px-2.5 py-1.5 rounded-lg border border-amber-500/30">🔒 Chốt tháng</button>
                 </div>
                 <button onclick="addSpending('${id}', ${current})" class="${theme.btnBg} text-xs font-medium px-3.5 py-1.5 rounded-lg shrink-0 shadow transition-colors">Cập nhật</button>
               </div>
@@ -292,27 +443,176 @@
       });
     });
 
-    // Thêm/Sửa Thẻ
+    // TÍNH NĂNG 3: Bật/Tắt Ghim Thẻ
+    window.togglePinCard = async (id, isPinned) => {
+      await updateDoc(doc(db, "cards", id), { isPinned });
+    };
+
+    // Cập nhật chi tiêu kèm lưu Sàn / Kênh quẹt
+    window.addSpending = async (id, currentVal) => {
+      const input = document.getElementById(`spend-input-${id}`);
+      const catInput = document.getElementById(`spend-cat-${id}`);
+      const noteInput = document.getElementById(`spend-note-${id}`);
+      const val = Number(input.value);
+      const category = catInput.value;
+      const extraNote = noteInput.value.trim();
+      const fullNote = extraNote ? `[${category}] ${extraNote}` : `[${category}] Quẹt thẻ`;
+
+      if (val) {
+        const cardRef = doc(db, "cards", id);
+        const cardSnap = await getDoc(cardRef);
+        const history = cardSnap.data().history || [];
+
+        const newLog = {
+          amount: val,
+          category: category,
+          note: fullNote,
+          timestamp: new Date().toLocaleString('vi-VN')
+        };
+
+        await updateDoc(cardRef, {
+          currentSpending: currentVal + val,
+          history: [newLog, ...history]
+        });
+
+        input.value = "";
+        noteInput.value = "";
+      }
+    };
+
+    // TÍNH NĂNG 6: Quản lý Danh mục Kênh / Sàn Quẹt
+    window.openCategoryModal = () => openModal('modal-categories');
+
+    function renderCategoriesModalList() {
+      const container = document.getElementById("category-list");
+      if (!container) return;
+      container.innerHTML = activeCategories.map((cat, idx) => `
+        <div class="flex justify-between items-center bg-slate-900 p-2 rounded border border-slate-700 text-xs">
+          <span>🛒 ${cat}</span>
+          <button onclick="removeCategory(${idx})" class="text-rose-400 hover:text-rose-300">Xóa</button>
+        </div>
+      `).join('');
+    }
+
+    window.addCategory = async () => {
+      const input = document.getElementById("new-cat-input");
+      const name = input.value.trim();
+      if (name && !activeCategories.includes(name)) {
+        activeCategories.push(name);
+        await setDoc(categoriesDocRef, { list: activeCategories });
+        input.value = "";
+      }
+    };
+
+    window.removeCategory = async (idx) => {
+      if (confirm("Xóa danh mục sàn quẹt này?")) {
+        activeCategories.splice(idx, 1);
+        await setDoc(categoriesDocRef, { list: activeCategories });
+      }
+    };
+
+    // TÍNH NĂNG 5: THỐNG KÊ THEO NĂM CỦA TỪNG LOẠI THẺ
+    window.openStatsModal = async () => {
+      const snapshot = await getDocs(collection(db, "monthly_archive"));
+      const container = document.getElementById("stats-content");
+
+      if (snapshot.empty) {
+        container.innerHTML = `<p class="text-center text-slate-400 py-6">Chưa có dữ liệu chốt sổ các tháng để thống kê.</p>`;
+        openModal('modal-stats');
+        return;
+      }
+
+      const records = snapshot.docs.map(d => d.data());
+      
+      const yearTotalStats = {};
+      const cardYearStats = {}; // { '2026': { 'VIB Super Card': 50000000, 'TPBank': 30000000 } }
+      const monthCategoryStats = {}; // { 'Tháng 09/2026': { 'Shopee': 1000000, 'TikTok Shop': 500000 } }
+
+      records.forEach(r => {
+        const year = r.cycleYear || 'Khác';
+        const cardName = r.cardName || 'Thẻ không tên';
+        const spent = r.totalSpent || 0;
+        const monthKey = r.month || 'Khác';
+
+        // Cộng tổng chi theo năm
+        yearTotalStats[year] = (yearTotalStats[year] || 0) + spent;
+
+        // Cộng tổng chi của từng loại thẻ theo năm
+        if (!cardYearStats[year]) cardYearStats[year] = {};
+        cardYearStats[year][cardName] = (cardYearStats[year][cardName] || 0) + spent;
+
+        // Thống kê theo kênh quẹt trong lịch sử giao dịch
+        if (r.history && Array.isArray(r.history)) {
+          if (!monthCategoryStats[monthKey]) monthCategoryStats[monthKey] = {};
+          r.history.forEach(item => {
+            const cat = item.category || 'Khác';
+            monthCategoryStats[monthKey][cat] = (monthCategoryStats[monthKey][cat] || 0) + (item.amount || 0);
+          });
+        }
+      });
+
+      let html = `<div class="space-y-4">`;
+
+      // 1. Thống kê từng loại thẻ theo Năm
+      for (const [yr, cardMap] of Object.entries(cardYearStats)) {
+        html += `
+          <div class="bg-slate-900 border border-slate-700/80 p-3.5 rounded-lg space-y-2">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-1.5">
+              <h3 class="font-bold text-amber-400 text-sm">📅 Tổng Chi Tiêu Năm ${yr}</h3>
+              <span class="font-bold font-num text-emerald-400 text-sm">${yearTotalStats[yr].toLocaleString('vi-VN')} đ</span>
+            </div>
+            <div class="space-y-1 pt-1">
+              <p class="text-[11px] text-slate-400 font-semibold mb-1">Chi tiết từng loại thẻ:</p>
+        `;
+        for (const [cName, total] of Object.entries(cardMap)) {
+          html += `<div class="flex justify-between text-xs py-0.5"><span class="text-slate-300">💳 ${cName}:</span> <span class="font-bold font-num text-indigo-300">${total.toLocaleString('vi-VN')} đ</span></div>`;
+        }
+        html += `</div></div>`;
+      }
+
+      // 2. Thống kê theo Sàn/Kênh quẹt hàng tháng
+      html += `
+        <div class="bg-slate-900 border border-slate-700/80 p-3.5 rounded-lg space-y-2">
+          <h3 class="font-bold text-indigo-400 text-sm">🛒 Thống Kê Theo Kênh / Sàn Quẹt Các Tháng</h3>
+          <div class="space-y-3 pt-1">
+      `;
+      for (const [mKey, catMap] of Object.entries(monthCategoryStats)) {
+        html += `<div class="border-b border-slate-800/80 pb-2"><p class="font-bold text-slate-200 text-xs mb-1">${mKey}:</p>`;
+        for (const [catName, catTotal] of Object.entries(catMap)) {
+          html += `<div class="flex justify-between text-[11px] pl-2 text-slate-400"><span>• ${catName}:</span> <span class="font-num text-slate-200">${catTotal.toLocaleString('vi-VN')} đ</span></div>`;
+        }
+        html += `</div>`;
+      }
+      html += `</div></div></div>`;
+
+      container.innerHTML = html;
+      openModal('modal-stats');
+    };
+
+    // Form Thêm/Sửa Thẻ
     document.getElementById("card-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const id = document.getElementById("card-id").value.trim();
       const name = document.getElementById("card-name").value.trim();
       const target = Number(document.getElementById("card-target").value);
+      const minTarget = Number(document.getElementById("card-min-target").value) || 0;
       const statementDay = Number(document.getElementById("card-statement").value);
       const customColor = document.getElementById("card-color").value;
       const rewardNote = document.getElementById("card-reward").value.trim();
 
       if (id !== "") {
-        await updateDoc(doc(db, "cards", id), { name, target, statementDay, customColor, rewardNote });
+        await updateDoc(doc(db, "cards", id), { name, target, minTarget, statementDay, customColor, rewardNote });
       } else {
         await addDoc(cardsCollection, { 
           name, 
           target, 
+          minTarget,
           statementDay, 
           customColor,
           rewardNote, 
           currentSpending: 0, 
           currentCycle: getCurrentCycleString(),
+          isPinned: false,
           history: [] 
         });
       }
@@ -320,29 +620,30 @@
       closeModal('modal-add');
     });
 
-    // Chốt sổ tự động
-    window.closeMonthAuto = async (id, name, current, target, currentCycle) => {
-      const confirmMsg = `Xác nhận chốt sổ thẻ ${name} cho chu kỳ [${currentCycle}] với tổng chi: ${current.toLocaleString('vi-VN')} đ?\nThẻ sẽ tự động nhảy sang chu kỳ tháng tiếp theo!`;
+    // Chốt sổ thủ công
+    window.closeMonthManual = async (id, name, current, target, currentCycle) => {
+      const confirmMsg = `Thủ công chốt sổ thẻ ${name} cho kỳ [${currentCycle}] với tổng chi: ${current.toLocaleString('vi-VN')} đ?\nThẻ sẽ tự động nhảy sang chu kỳ tháng tiếp theo!`;
       if (!confirm(confirmMsg)) return;
 
       const [mStr, yStr] = currentCycle.split('/');
       let m = parseInt(mStr);
       let y = parseInt(yStr);
       m++;
-      if (m > 12) {
-        m = 1;
-        y++;
-      }
+      if (m > 12) { m = 1; y++; }
       const nextCycle = `${String(m).padStart(2, '0')}/${y}`;
+
+      const cardSnap = await getDoc(doc(db, "cards", id));
+      const history = cardSnap.data().history || [];
 
       await addDoc(collection(db, "monthly_archive"), {
         cardName: name,
         month: `Tháng ${currentCycle}`,
         cycleMonth: mStr,
-        cycleYear: y,
+        cycleYear: parseInt(yStr),
         totalSpent: current,
         target: target,
-        closedAt: new Date().toLocaleString('vi-VN')
+        closedAt: new Date().toLocaleString('vi-VN'),
+        history: history
       });
 
       await updateDoc(doc(db, "cards", id), {
@@ -377,82 +678,7 @@
       downloadAnchor.remove();
     };
 
-    // Modal Thống Kê
-    window.openStatsModal = async () => {
-      const snapshot = await getDocs(collection(db, "monthly_archive"));
-      const container = document.getElementById("stats-content");
-
-      if (snapshot.empty) {
-        container.innerHTML = `<p class="text-center text-slate-400 py-6">Chưa có dữ liệu chốt sổ các tháng để thống kê.</p>`;
-        openModal('modal-stats');
-        return;
-      }
-
-      const records = snapshot.docs.map(d => d.data());
-      const yearStats = {};
-      const monthStats = {};
-
-      records.forEach(r => {
-        const year = r.cycleYear || (r.month ? r.month.split('/')[1] : 'Khác');
-        const monthKey = r.month || 'Khác';
-        
-        yearStats[year] = (yearStats[year] || 0) + (r.totalSpent || 0);
-        monthStats[monthKey] = (monthStats[monthKey] || 0) + (r.totalSpent || 0);
-      });
-
-      let html = `
-        <div class="bg-slate-900 border border-slate-700/80 p-3.5 rounded-lg space-y-2">
-          <h3 class="font-bold text-indigo-400 text-sm">📅 Thống Kê Tổng Chi Theo Năm</h3>
-          <div class="space-y-1">
-      `;
-      for (const [yr, total] of Object.entries(yearStats)) {
-        html += `<div class="flex justify-between border-b border-slate-800 pb-1"><span>Năm ${yr}:</span> <span class="font-bold text-emerald-400">${total.toLocaleString('vi-VN')} đ</span></div>`;
-      }
-      html += `</div></div>`;
-
-      html += `
-        <div class="bg-slate-900 border border-slate-700/80 p-3.5 rounded-lg space-y-2 mt-4">
-          <h3 class="font-bold text-amber-400 text-sm">📆 Thống Kê Chi Tiêu Theo Tháng</h3>
-          <div class="space-y-1">
-      `;
-      for (const [m, total] of Object.entries(monthStats)) {
-        html += `<div class="flex justify-between border-b border-slate-800 pb-1"><span>${m}:</span> <span class="font-bold text-slate-200">${total.toLocaleString('vi-VN')} đ</span></div>`;
-      }
-      html += `</div></div>`;
-
-      container.innerHTML = html;
-      openModal('modal-stats');
-    };
-
-    // Cập nhật chi tiêu
-    window.addSpending = async (id, currentVal) => {
-      const input = document.getElementById(`spend-input-${id}`);
-      const noteInput = document.getElementById(`spend-note-${id}`);
-      const val = Number(input.value);
-      const note = noteInput.value.trim() || "Chuyển khoản / Quẹt thẻ";
-
-      if (val) {
-        const cardRef = doc(db, "cards", id);
-        const cardSnap = await getDoc(cardRef);
-        const history = cardSnap.data().history || [];
-
-        const newLog = {
-          amount: val,
-          note: note,
-          timestamp: new Date().toLocaleString('vi-VN')
-        };
-
-        await updateDoc(cardRef, {
-          currentSpending: currentVal + val,
-          history: [newLog, ...history]
-        });
-
-        input.value = "";
-        noteInput.value = "";
-      }
-    };
-
-    // Lịch sử giao dịch
+    // Lịch sử giao dịch & Xóa
     window.viewHistory = async (id, cardName) => {
       document.getElementById("history-modal-title").innerText = `Lịch Sử Giao Dịch: ${cardName}`;
       const cardSnap = await getDoc(doc(db, "cards", id));
@@ -465,7 +691,7 @@
         container.innerHTML = history.map((item, idx) => `
           <div class="bg-slate-900 border border-slate-700/60 rounded-lg p-3 flex justify-between items-center text-xs">
             <div>
-              <p class="font-bold text-emerald-400">+${item.amount.toLocaleString('vi-VN')} đ</p>
+              <p class="font-bold font-num text-emerald-400">+${item.amount.toLocaleString('vi-VN')} đ</p>
               <p class="text-slate-300 mt-0.5">${item.note}</p>
               <p class="text-slate-500 text-[10px]">${item.timestamp}</p>
             </div>
@@ -511,8 +737,8 @@
                   <span class="${isReached ? 'text-emerald-400' : 'text-amber-400'}">${isReached ? '🎉 Đạt Mốc' : 'Chưa Đạt'}</span>
                 </div>
                 <div class="flex justify-between text-slate-300">
-                  <span>Tổng chi: ${d.totalSpent.toLocaleString('vi-VN')} đ</span>
-                  <span>Mốc: ${d.target.toLocaleString('vi-VN')} đ</span>
+                  <span>Tổng chi: <strong class="font-num">${d.totalSpent.toLocaleString('vi-VN')} đ</strong></span>
+                  <span>Mốc: <span class="font-num">${d.target.toLocaleString('vi-VN')} đ</span></span>
                 </div>
                 <p class="text-[10px] text-slate-500">Chốt lúc: ${d.closedAt}</p>
               </div>
@@ -523,7 +749,7 @@
       });
     };
 
-    // Hàm chọn Theme ngân hàng + Tông màu mới (Trắng AMEX & Xanh Bơ Avocado)
+    // Theme ngân hàng
     function getBankThemeCustom(cardName = '', customColor = '') {
       const name = cardName.toUpperCase();
       let colorType = customColor;
@@ -539,35 +765,35 @@
       switch(colorType) {
         case 'white_amex':
           return {
-            cardBg: 'bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 text-slate-800',
+            cardBg: 'bg-gradient-to-br from-slate-100 via-gray-100 to-slate-200 text-slate-900 border-slate-300 shadow-lg',
             headerText: 'text-slate-900 font-extrabold tracking-tight',
-            subText: 'text-slate-600',
-            badgeBg: 'bg-slate-800/10 text-slate-700 border-slate-400/40',
-            progressBg: 'bg-slate-300/80',
-            progressBar: 'bg-slate-700',
-            spendText: 'text-slate-800 font-semibold',
-            rewardBg: 'bg-slate-900/10 text-slate-800 border-slate-400/50',
-            btnBg: 'bg-slate-900 hover:bg-slate-800 text-white font-medium',
-            inputBg: 'bg-white/90 text-slate-900 placeholder-slate-400 border-slate-300 focus:ring-slate-500',
+            subText: 'text-slate-600 font-medium',
+            badgeBg: 'bg-slate-800 text-slate-100 border-slate-700',
+            progressBg: 'bg-slate-300',
+            progressBar: 'bg-slate-800',
+            spendText: 'text-slate-900 font-semibold',
+            rewardBg: 'bg-slate-300/60 text-slate-900 border-slate-400/60 font-medium',
+            btnBg: 'bg-slate-900 hover:bg-slate-800 text-white font-semibold',
+            inputBg: 'bg-white text-slate-900 placeholder-slate-400 border-slate-300 focus:ring-slate-500',
             accentText: 'text-slate-900 font-bold'
           };
         case 'avocado':
           return {
-            cardBg: 'bg-gradient-to-br from-lime-900 via-emerald-950 to-slate-950',
+            cardBg: 'bg-[#1e392a] text-lime-100 border-lime-600/40 shadow-lg',
             headerText: 'text-lime-200 font-bold',
             subText: 'text-lime-300/80',
-            badgeBg: 'bg-lime-500/20 text-lime-200 border-lime-500/40',
-            progressBg: 'bg-black/60',
+            badgeBg: 'bg-lime-900/80 text-lime-200 border-lime-600/50',
+            progressBg: 'bg-black/50',
             progressBar: 'bg-lime-400',
-            spendText: 'text-lime-200',
-            rewardBg: 'bg-lime-950/60 text-lime-200 border-lime-600/40',
-            btnBg: 'bg-lime-500 hover:bg-lime-400 text-slate-950 font-semibold',
-            inputBg: 'bg-black/60 text-lime-100 placeholder-lime-600 border-lime-800/60 focus:ring-lime-400',
+            spendText: 'text-lime-100',
+            rewardBg: 'bg-black/40 text-lime-200 border-lime-600/40',
+            btnBg: 'bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold',
+            inputBg: 'bg-black/50 text-lime-100 placeholder-lime-600/70 border-lime-700/60 focus:ring-lime-400',
             accentText: 'text-lime-300'
           };
         case 'black':
           return {
-            cardBg: 'bg-gradient-to-br from-slate-950 via-gray-900 to-black',
+            cardBg: 'bg-gradient-to-br from-slate-950 via-gray-900 to-black text-slate-100 border-amber-500/20 shadow-lg',
             headerText: 'text-amber-200 font-extrabold tracking-wide',
             subText: 'text-gray-400',
             badgeBg: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
@@ -581,44 +807,44 @@
           };
         case 'purple':
           return {
-            cardBg: 'bg-purple-950/80',
-            headerText: 'text-purple-100',
+            cardBg: 'bg-purple-950/90 text-purple-100 border-purple-800/60 shadow-lg',
+            headerText: 'text-purple-100 font-bold',
             subText: 'text-purple-300',
-            badgeBg: 'bg-purple-900/60 text-purple-200 border-purple-700',
+            badgeBg: 'bg-purple-900/80 text-purple-200 border-purple-700',
             progressBg: 'bg-purple-950',
             progressBar: 'bg-amber-400',
             spendText: 'text-purple-200',
             rewardBg: 'bg-purple-900/40 text-purple-200 border-purple-700/50',
-            btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900',
+            btnBg: 'bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold',
             inputBg: 'bg-purple-900/60 text-white placeholder-purple-400 border-purple-700 focus:ring-amber-400',
             accentText: 'text-amber-300'
           };
         case 'emerald':
           return {
-            cardBg: 'bg-emerald-950/80',
-            headerText: 'text-emerald-100',
+            cardBg: 'bg-emerald-950/90 text-emerald-100 border-emerald-800/60 shadow-lg',
+            headerText: 'text-emerald-100 font-bold',
             subText: 'text-emerald-300',
-            badgeBg: 'bg-emerald-900/60 text-emerald-200 border-emerald-700',
+            badgeBg: 'bg-emerald-900/80 text-emerald-200 border-emerald-700',
             progressBg: 'bg-emerald-950',
             progressBar: 'bg-emerald-400',
             spendText: 'text-emerald-200',
             rewardBg: 'bg-emerald-900/40 text-emerald-200 border-emerald-700/50',
-            btnBg: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+            btnBg: 'bg-emerald-500 hover:bg-emerald-400 text-white font-semibold',
             inputBg: 'bg-emerald-900/60 text-white placeholder-emerald-400 border-emerald-700 focus:ring-emerald-400',
             accentText: 'text-emerald-300'
           };
         case 'blue':
         default:
           return {
-            cardBg: 'bg-blue-950/80',
-            headerText: 'text-blue-100',
+            cardBg: 'bg-blue-950/90 text-blue-100 border-blue-800/60 shadow-lg',
+            headerText: 'text-blue-100 font-bold',
             subText: 'text-blue-300',
-            badgeBg: 'bg-blue-900/60 text-blue-200 border-blue-700',
+            badgeBg: 'bg-blue-900/80 text-blue-200 border-blue-700',
             progressBg: 'bg-blue-950',
             progressBar: 'bg-orange-400',
             spendText: 'text-blue-200',
             rewardBg: 'bg-blue-900/40 text-blue-200 border-blue-700/50',
-            btnBg: 'bg-orange-500 hover:bg-orange-600 text-white',
+            btnBg: 'bg-orange-500 hover:bg-orange-600 text-white font-semibold',
             inputBg: 'bg-blue-900/60 text-white placeholder-blue-400 border-blue-700 focus:ring-orange-400',
             accentText: 'text-orange-300'
           };
@@ -665,10 +891,11 @@
       openModal('modal-add');
     };
 
-    window.editCard = (id, name, target, statementDay, rewardNote, customColor = '') => {
+    window.editCard = (id, name, target, statementDay, rewardNote, customColor = '', minTarget = 0) => {
       document.getElementById("card-id").value = id;
       document.getElementById("card-name").value = name;
       document.getElementById("card-target").value = target;
+      document.getElementById("card-min-target").value = minTarget || '';
       document.getElementById("card-statement").value = statementDay;
       document.getElementById("card-color").value = customColor || 'white_amex';
       document.getElementById("card-reward").value = rewardNote;
